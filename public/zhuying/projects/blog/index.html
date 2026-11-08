@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f5f0">
+  <meta name="description" content="纸间：记录学习、分享思考的个人博客。">
+  <title>纸间 · 把想法写下来</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <p style="margin:0;padding:.5rem 1rem;text-align:center;background:#e4e9dd;color:#343e31;font-size:.85rem">只读作品预览 · 可浏览文章、按分类或标签筛选。登录与文章编辑需启动原项目。</p>
+  <header class="masthead">
+    <a href="#/posts" class="brand" aria-label="纸间首页"><span class="brand-icon" aria-hidden="true"><i></i><i></i><i></i></span><span>纸间<small>BETWEEN THE PAGES</small></span></a>
+    <nav class="nav" aria-label="主导航"><a href="#/posts" id="navPosts">全部文章</a><a href="#/posts?mine=1" id="navMine">我的文章</a><a href="#/profile" id="navProfile">个人中心</a></nav>
+    <div class="header-actions"><div id="accountArea"></div><a href="#/write" class="button primary write-button"><span aria-hidden="true">＋</span> 写文章</a></div>
+  </header>
+  <main id="page" tabindex="-1"><div class="loading">正在翻开纸间…</div></main>
+  <footer class="site-footer"><span><b>纸间</b> · 给每一个想法，留一页位置。</span><span>个人博客系统 · MySQL 本地版</span></footer>
+  <dialog id="authDialog" aria-labelledby="authTitle"><div class="dialog-shell"><button class="close" data-action="close-auth" aria-label="关闭登录窗口">×</button><p class="eyebrow">WELCOME TO PAPER</p><h2 id="authTitle">欢迎回到纸间</h2><p class="muted">登录后，继续写下你的故事。</p><div id="authContent"></div></div></dialog>
+  <dialog id="categoryDialog" aria-labelledby="categoryTitle"><div class="dialog-shell wide"><button class="close" data-action="close-categories" aria-label="关闭分类管理">×</button><p class="eyebrow">ORGANIZE YOUR NOTES</p><h2 id="categoryTitle">管理文章分类</h2><p class="muted">可以新建分类，也可以修改自己创建的分类。已有文章的分类需要先迁移文章才能删除。</p><div id="categoryContent"></div></div></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="../course-preview.js" defer></script>
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f3ff">
+  <meta name="description" content="超级无敌宇宙暴龙战士的个人数字名片。数字经济专业学生，关注数据、产品与数字技术。">
+  <title>超级无敌宇宙暴龙战士 · 个人数字名片</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17152b;
+      --muted: #77758c;
+      --purple: #6654e8;
+      --purple-dark: #4939c7;
+      --lilac: #eeeaff;
+      --paper: #fbfaff;
+      --line: #e9e6f3;
+      --mint: #c8f0df;
+      --serif: Georgia, "Times New Roman", serif;
+      font-family: Inter, "SF Pro Display", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      scroll-behavior: smooth;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 83% 7%, rgba(215, 205, 255, .58), transparent 31rem),
+        radial-gradient(ellipse at 5% 58%, rgba(218, 247, 235, .52), transparent 27rem),
+        var(--paper);
+      line-height: 1.65;
+    }
+    a { color: inherit; }
+    button { font: inherit; }
+    .skip-link { position: absolute; left: -9999px; top: 1rem; z-index: 10; }
+    .skip-link:focus { left: 1rem; padding: .7rem 1rem; background: white; border-radius: 10px; }
+    .shell { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
+    .site-header { height: 88px; display: flex; align-items: center; justify-content: space-between; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; font-weight: 800; letter-spacing: -.04em; }
+    .brand-mark { width: 35px; height: 35px; flex: 0 0 auto; border-radius: 12px; display: grid; place-items: center; color: white; background: var(--purple); box-shadow: 0 7px 18px #6654e844; font-size: 18px; }
+    .brand-name { font-size: 17px; }
+    .nav { display: flex; align-items: center; gap: 33px; }
+    .nav a { color: #68667b; text-decoration: none; font-size: 13px; transition: color .2s; }
+    .nav a:hover, .nav a:focus-visible { color: var(--purple); }
+    .nav .nav-cta { padding: 10px 17px; border: 1px solid #d8d2f7; border-radius: 999px; color: var(--purple-dark); background: #ffffffa8; }
+    .menu-toggle { display: none; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 13px; background: white; color: var(--ink); cursor: pointer; }
+
+    .hero { min-height: 630px; display: grid; grid-template-columns: 1.03fr .97fr; align-items: center; gap: 70px; padding: 54px 0 82px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--purple); font-size: 11px; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 27px; height: 1px; background: currentColor; }
+    h1 { margin: 23px 0 16px; max-width: 590px; font-size: clamp(46px, 6.5vw, 76px); line-height: 1.05; letter-spacing: -.065em; font-weight: 750; }
+    h1 .name { display: block; margin-top: .24em; color: var(--purple); font-size: clamp(25px, 4.15vw, 48px); font-weight: 720; line-height: 1.2; letter-spacing: -.04em; }
+    .hero-lede { max-width: 485px; margin: 0; color: #69677c; font-size: 16px; line-height: 1.95; }
+    .hero-lede strong { color: var(--ink); font-weight: 650; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 31px; }
+    .button { min-height: 47px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 0 18px; border: 1px solid transparent; border-radius: 14px; text-decoration: none; font-size: 13px; font-weight: 700; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s; }
+    .button:hover { transform: translateY(-2px); }
+    .button-primary { background: var(--purple); color: white; box-shadow: 0 10px 22px #6654e832; }
+    .button-primary:hover { background: var(--purple-dark); box-shadow: 0 13px 25px #6654e840; }
+    .button-soft { border-color: var(--line); background: #ffffffb8; color: #4c4963; }
+    .button svg { width: 16px; height: 16px; }
+    .micro-note { margin-top: 22px; color: #9996a8; font-size: 11px; letter-spacing: .02em; }
+
+    .card-stage { min-height: 440px; position: relative; display: grid; place-items: center; }
+    .halo { position: absolute; width: min(430px, 92%); aspect-ratio: 1; border: 1px solid #d9d2fa; border-radius: 50%; }
+    .halo::before, .halo::after { content: ""; position: absolute; border: 1px solid #e9e5f8; border-radius: 50%; }
+    .halo::before { inset: 26px; }
+    .halo::after { inset: 57px; }
+    .orbit-dot { position: absolute; z-index: 1; width: 11px; height: 11px; border: 3px solid var(--paper); border-radius: 50%; background: #8d7df3; box-shadow: 0 0 0 1px #8d7df355; }
+    .orbit-dot.one { top: 75px; right: 54px; }
+    .orbit-dot.two { bottom: 78px; left: 52px; width: 8px; height: 8px; background: #83c9ab; }
+    .business-card { z-index: 2; width: min(390px, 88%); min-height: 300px; position: relative; overflow: hidden; padding: 28px; border-radius: 27px; color: white; background: linear-gradient(145deg, #29234c 0%, #16152c 70%, #252044 100%); box-shadow: 0 28px 65px #2c24502c, 0 6px 18px #29234c18; transform: rotate(-3deg); }
+    .business-card::before { content: ""; position: absolute; width: 270px; height: 270px; right: -80px; top: -102px; border-radius: 42% 58% 60% 40%; background: linear-gradient(140deg, #a99cff, #6d59e7 60%, #5366c9); opacity: .9; transform: rotate(28deg); }
+    .business-card::after { content: ""; position: absolute; width: 185px; height: 185px; right: -13px; top: -45px; border: 1px solid #ffffff54; border-radius: 50%; }
+    .card-top, .card-main, .card-bottom { position: relative; z-index: 1; }
+    .card-top { display: flex; justify-content: space-between; align-items: center; color: #c7c1e2; font-size: 9px; font-weight: 700; letter-spacing: .17em; }
+    .card-top .spark { color: #d9d2ff; font-size: 18px; }
+    .card-main { margin-top: 65px; }
+    .avatar { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid #ffffff4b; border-radius: 16px; color: white; background: #ffffff20; backdrop-filter: blur(6px); font-size: 22px; }
+    .card-main h2 { margin: 14px 0 0; font-size: clamp(15px, 2.1vw, 27px); line-height: 1.2; letter-spacing: -.025em; }
+    .card-main p { margin: 10px 0 0; color: #c9c5da; font-size: 12px; }
+    .card-bottom { display: flex; align-items: end; justify-content: space-between; margin-top: 38px; padding-top: 16px; border-top: 1px solid #ffffff29; }
+    .card-bottom small { display: block; color: #aaa5c5; font-size: 9px; letter-spacing: .15em; }
+    .card-bottom strong { display: block; margin-top: 4px; color: #f2efff; font-size: 11px; font-weight: 550; }
+    .card-index { color: #b8b2da; font-family: var(--serif); font-size: 26px; font-style: italic; }
+    .floating-note { position: absolute; z-index: 3; display: flex; align-items: center; gap: 10px; padding: 12px 15px; border: 1px solid #efedf6; border-radius: 15px; background: #fff; box-shadow: 0 12px 35px #28224712; }
+    .floating-note.top { top: 42px; right: -3px; }
+    .floating-note.bottom { bottom: 30px; left: 0; }
+    .note-icon { width: 29px; height: 29px; display: grid; place-items: center; border-radius: 10px; color: var(--purple); background: var(--lilac); font-size: 13px; font-weight: 800; }
+    .floating-note small { display: block; color: #9794a6; font-size: 8px; letter-spacing: .13em; }
+    .floating-note strong { display: block; color: #39364e; font-size: 11px; }
+
+    .section { padding: 79px 0; border-top: 1px solid #eae7f1; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 34px; }
+    .section-label { margin: 0 0 9px; color: var(--purple); font-size: 10px; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
+    h2.section-title { margin: 0; font-size: clamp(29px, 4vw, 42px); line-height: 1.18; letter-spacing: -.05em; }
+    .section-heading > p { max-width: 360px; margin: 0; color: var(--muted); font-size: 13px; }
+    .about-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 28px; }
+    .about-quote { min-height: 245px; position: relative; overflow: hidden; padding: 30px; border-radius: 22px; background: #eeeaff; }
+    .quote-mark { color: #8c7cef; font-family: var(--serif); font-size: 52px; line-height: .8; }
+    .about-quote p { position: relative; z-index: 1; max-width: 340px; margin: 25px 0 0; color: #38344f; font-size: 20px; font-weight: 600; line-height: 1.65; letter-spacing: -.025em; }
+    .about-quote::after { content: "龙"; position: absolute; right: 7px; bottom: -86px; color: #ffffff7a; font-size: 230px; line-height: 1; }
+    .about-copy { padding: 18px 8px; }
+    .about-copy p { max-width: 570px; margin: 0 0 19px; color: #6f6c80; font-size: 14px; line-height: 1.95; }
+    .about-copy p strong { color: var(--ink); }
+    .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 28px; }
+    .fact { padding: 15px 14px; border: 1px solid var(--line); border-radius: 15px; background: #ffffffa8; }
+    .fact small { display: block; color: #9996a8; font-size: 10px; }
+    .fact strong { display: block; margin-top: 5px; font-size: 12px; }
+
+    .interest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .interest { min-height: 178px; padding: 24px; border: 1px solid var(--line); border-radius: 20px; background: #fff; transition: transform .2s, box-shadow .2s; }
+    .interest:hover { transform: translateY(-4px); box-shadow: 0 16px 35px #29234c0c; }
+    .interest-icon { width: 39px; height: 39px; display: grid; place-items: center; border-radius: 13px; color: var(--purple); background: var(--lilac); font-size: 16px; font-weight: 700; }
+    .interest:nth-child(2) .interest-icon { color: #34896b; background: #e4f5ee; }
+    .interest:nth-child(3) .interest-icon { color: #bd7d31; background: #fcf1e1; }
+    .interest h3 { margin: 19px 0 5px; font-size: 16px; letter-spacing: -.02em; }
+    .interest p { margin: 0; color: var(--muted); font-size: 12px; }
+
+    .work-card { display: grid; grid-template-columns: 1.1fr .9fr; overflow: hidden; border: 1px solid var(--line); border-radius: 24px; background: white; }
+    .work-info { padding: 33px; }
+    .work-kicker { display: flex; align-items: center; gap: 8px; color: #8a879b; font-size: 10px; font-weight: 700; letter-spacing: .12em; }
+    .work-kicker span { width: 7px; height: 7px; border-radius: 50%; background: #70c39d; }
+    .work-info h3 { margin: 21px 0 10px; font-size: 25px; line-height: 1.25; letter-spacing: -.04em; }
+    .work-info > p { max-width: 430px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.85; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+    .tag { padding: 6px 10px; border-radius: 999px; color: #635d8a; background: #f2efff; font-size: 10px; font-weight: 700; }
+    .work-visual { min-height: 255px; position: relative; display: grid; place-items: center; overflow: hidden; background: linear-gradient(135deg, #e9e5ff, #e4f7ee); }
+    .mini-window { width: 72%; min-height: 170px; padding: 16px; border: 1px solid #ffffff; border-radius: 17px; background: #ffffffcf; box-shadow: 0 20px 40px #3a326222; transform: rotate(4deg); }
+    .window-bar { display: flex; gap: 4px; padding-bottom: 12px; border-bottom: 1px solid #efedf4; }
+    .window-bar i { width: 6px; height: 6px; border-radius: 50%; background: #d9d5e7; }
+    .window-content { display: flex; gap: 13px; align-items: center; margin-top: 15px; }
+    .mini-avatar { width: 39px; height: 39px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 13px; color: white; background: var(--purple); font-size: 18px; }
+    .mini-lines { flex: 1; }
+    .mini-lines b, .mini-lines i { display: block; height: 7px; border-radius: 999px; background: #d8d3f7; }
+    .mini-lines b { width: 46%; margin-bottom: 8px; background: #59517d; }
+    .mini-lines i { width: 78%; height: 5px; background: #e5e2ed; }
+    .mini-pills { display: flex; gap: 6px; margin-top: 16px; }
+    .mini-pills i { width: 52px; height: 16px; border-radius: 999px; background: #eeeaff; }
+    .mini-pills i:nth-child(2) { width: 38px; background: #e4f5ee; }
+    .mini-pills i:nth-child(3) { width: 45px; background: #fcf1e1; }
+
+    .contact-panel { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 28px; overflow: hidden; padding: 36px; border-radius: 24px; color: white; background: #201d3a; }
+    .contact-panel::after { content: ""; position: absolute; width: 250px; height: 250px; right: 22%; top: -175px; border: 1px solid #ffffff27; border-radius: 50%; box-shadow: 0 0 0 24px #ffffff08, 0 0 0 50px #ffffff06; }
+    .contact-copy { position: relative; z-index: 1; }
+    .contact-copy .section-label { color: #bdb3ff; }
+    .contact-copy h2 { margin: 0; font-size: clamp(26px, 4vw, 36px); line-height: 1.25; letter-spacing: -.04em; }
+    .contact-copy p { margin: 10px 0 0; color: #c2bed3; font-size: 13px; }
+    .contact-status { position: relative; z-index: 1; min-width: 170px; display: flex; align-items: center; gap: 11px; padding: 14px 17px; border: 1px solid #ffffff28; border-radius: 14px; color: #e1def0; background: #ffffff0d; font-size: 12px; }
+    .contact-status span { width: 8px; height: 8px; border-radius: 50%; background: #92d7b5; box-shadow: 0 0 0 4px #92d7b522; }
+    .site-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 25px 0 34px; color: #9693a5; font-size: 10px; }
+    .site-footer a { color: #716b9a; text-decoration: none; }
+    .toast { position: fixed; z-index: 20; left: 50%; bottom: 26px; padding: 11px 16px; border-radius: 12px; color: white; background: #24213d; box-shadow: 0 12px 28px #17152b33; font-size: 12px; opacity: 0; transform: translate(-50%, 12px); pointer-events: none; transition: opacity .2s, transform .2s; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    :focus-visible { outline: 3px solid #9c8df5; outline-offset: 3px; }
+
+    @media (max-width: 850px) {
+      .hero { gap: 20px; grid-template-columns: 1fr .9fr; }
+      .floating-note.top { right: -10px; }
+      .about-grid { grid-template-columns: 1fr 1.1fr; }
+    }
+    @media (max-width: 680px) {
+      .shell { width: min(100% - 36px, 520px); }
+      .site-header { height: 72px; }
+      .menu-toggle { display: grid; place-items: center; }
+      .nav { display: none; position: absolute; z-index: 8; top: 63px; right: 18px; left: 18px; align-items: stretch; gap: 0; padding: 9px; border: 1px solid var(--line); border-radius: 17px; background: white; box-shadow: 0 18px 35px #28224718; }
+      .nav.open { display: flex; flex-direction: column; }
+      .nav a { padding: 11px 13px; }
+      .nav .nav-cta { margin-top: 4px; text-align: center; }
+      .hero { min-height: 0; display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 49px 0 55px; }
+      h1 { margin-top: 18px; font-size: clamp(39px, 10vw, 62px); }
+      h1 .name { font-size: clamp(25px, 7.5vw, 42px); }
+      .hero-lede { font-size: 14px; }
+      .hero-actions { margin-top: 24px; }
+      .micro-note { margin-top: 16px; }
+      .card-stage { min-height: 370px; margin-top: 22px; }
+      .halo { width: min(350px, 88%); }
+      .business-card { width: min(350px, 84%); min-height: 275px; padding: 23px; }
+      .card-main { margin-top: 53px; }
+      .card-bottom { margin-top: 28px; }
+      .floating-note.top { top: 20px; right: 0; }
+      .floating-note.bottom { bottom: 19px; left: 0; }
+      .section { padding: 58px 0; }
+      .section-heading { display: block; margin-bottom: 25px; }
+      .section-heading > p { margin-top: 12px; }
+      .about-grid, .work-card { grid-template-columns: 1fr; }
+      .about-quote { min-height: 205px; }
+      .about-quote p { max-width: 290px; font-size: 18px; }
+      .about-copy { padding: 9px 2px; }
+      .facts { gap: 8px; }
+      .fact { padding: 12px 10px; }
+      .fact strong { font-size: 11px; }
+      .interest-grid { grid-template-columns: 1fr; gap: 10px; }
+      .interest { min-height: 0; display: grid; grid-template-columns: 41px 1fr; column-gap: 13px; padding: 17px; }
+      .interest-icon { grid-row: span 2; }
+      .interest h3 { margin: 0 0 3px; }
+      .interest p { grid-column: 2; }
+      .work-info { padding: 25px; }
+      .work-visual { min-height: 225px; }
+      .contact-panel { align-items: flex-start; flex-direction: column; padding: 27px; }
+      .contact-status { min-width: 0; }
+      .site-footer { align-items: flex-start; flex-direction: column; gap: 7px; padding-bottom: 25px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="site-header shell">
+    <a class="brand" href="#top" aria-label="超级无敌宇宙暴龙战士，返回首页">
+      <span class="brand-mark" aria-hidden="true">龙</span><span class="brand-name">超级无敌宇宙暴龙战士</span>
+    </a>
+    <button class="menu-toggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="site-nav">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+    <nav class="nav" id="site-nav" aria-label="主导航">
+      <a href="#about">关于我</a><a href="#interests">关注方向</a><a href="#work">项目作品</a><a class="nav-cta" href="#contact">联系与名片 ↗</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero shell" id="top" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow">DIGITAL ECONOMY · PERSONAL CARD</div>
+        <h1 id="hero-title">你好，我是<span class="name">超级无敌宇宙<wbr>暴龙战士</span></h1>
+        <p class="hero-lede"><strong>数字经济专业学生</strong><br>关注数据、产品与数字技术如何连接真实生活，也在用 Vibe Coding 把灵感变成可见、可用的小作品。</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#about">认识我 <span aria-hidden="true">↘</span></a>
+          <button class="button button-soft" id="download-card" type="button">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 16v4h14v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            下载电子名片
+          </button>
+        </div>
+        <p class="micro-note">一张持续更新的数字名片 · 用好奇心开始</p>
+      </div>
+      <div class="card-stage" aria-label="超级无敌宇宙暴龙战士的数字名片预览">
+        <div class="halo" aria-hidden="true"></div><i class="orbit-dot one" aria-hidden="true"></i><i class="orbit-dot two" aria-hidden="true"></i>
+        <aside class="floating-note top"><span class="note-icon">✳</span><span><small>NOW EXPLORING</small><strong>Vibe Coding</strong></span></aside>
+        <article class="business-card">
+          <div class="card-top"><span>PERSONAL DIGITAL CARD</span><span class="spark" aria-hidden="true">✳</span></div>
+          <div class="card-main"><div class="avatar" aria-hidden="true">龙</div><h2>超级无敌宇宙暴龙战士</h2><p>数字经济专业学生</p></div>
+          <div class="card-bottom"><div><small>FOCUS</small><strong>数据 · 产品 · 数字技术</strong></div><span class="card-index">01</span></div>
+        </article>
+        <aside class="floating-note bottom"><span class="note-icon" style="color:#39896c;background:#e4f5ee">↗</span><span><small>MADE OF</small><strong>Curiosity & ideas</strong></span></aside>
+      </div>
+    </section>
+
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="section-label">A LITTLE ABOUT ME</p><h2 class="section-title" id="about-title">关于我</h2></div>
+          <p>从数字经济出发，在商业、技术与日常体验之间寻找有意思的连接。</p>
+        </div>
+        <div class="about-grid">
+          <div class="about-quote"><div class="quote-mark" aria-hidden="true">“</div><p>好奇一个问题，<br>就动手做出一个答案。</p></div>
+          <div class="about-copy">
+            <p>你好，我是<strong>超级无敌宇宙暴龙战士</strong>，一名数字经济专业学生。我对数字技术如何改变商业与生活保持好奇，也喜欢观察一个想法怎样逐步变成清晰的产品体验。</p>
+            <p>这张个人名片是一次 <strong>Vibe Coding</strong> 实践：从需求梳理开始，用自然语言驱动页面设计与代码生成，再通过迭代把内容打磨成适合分享的网页。</p>
+            <div class="facts" aria-label="个人信息">
+              <div class="fact"><small>专业</small><strong>数字经济</strong></div>
+              <div class="fact"><small>当前练习</small><strong>Vibe Coding</strong></div>
+              <div class="fact"><small>联系方式</small><strong>暂不公开</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="interests" aria-labelledby="interests-title">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="section-label">CURIOUS ABOUT</p><h2 class="section-title" id="interests-title">我关注的方向</h2></div>
+          <p>持续学习与探索中，以下是目前最常让我停下来多想一步的主题。</p>
+        </div>
+        <div class="interest-grid">
+          <article class="interest"><div class="interest-icon" aria-hidden="true">↗</div><h3>数字经济</h3><p>技术变化如何重塑产业、商业模式与价值创造。</p></article>
+          <article class="interest"><div class="interest-icon" aria-hidden="true">▥</div><h3>数据观察</h3><p>从信息与数据中发现线索，让判断更有依据。</p></article>
+          <article class="interest"><div class="interest-icon" aria-hidden="true">✳</div><h3>产品实践</h3><p>把需求讲清楚，再用轻量工具快速做出原型。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="work" aria-labelledby="work-title">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="section-label">SELECTED WORK</p><h2 class="section-title" id="work-title">正在完成的作品</h2></div>
+          <p>先从这张名片开始，让想法有一个可以打开、可以分享的入口。</p>
+        </div>
+        <article class="work-card">
+          <div class="work-info">
+            <div class="work-kicker"><span aria-hidden="true"></span>个人项目 · 进行中</div>
+            <h3>Vibe Coding<br>个人数字名片</h3>
+            <p>用一个轻盈、清晰的网页介绍自己：包含个人简介、关注方向和电子名片下载，并适配手机与桌面浏览。</p>
+            <div class="tags"><span class="tag">需求对齐</span><span class="tag">HTML · CSS · JS</span><span class="tag">响应式设计</span></div>
+          </div>
+          <div class="work-visual" aria-label="网页名片界面示意图">
+            <div class="mini-window" aria-hidden="true"><div class="window-bar"><i></i><i></i><i></i></div><div class="window-content"><div class="mini-avatar">龙</div><div class="mini-lines"><b></b><i></i></div></div><div class="mini-pills"><i></i><i></i><i></i></div></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="shell">
+        <div class="contact-panel">
+          <div class="contact-copy"><p class="section-label">SAY HELLO</p><h2 id="contact-title">保持好奇，继续创造。</h2><p>这张名片会随着新的想法与作品不断更新。</p></div>
+          <div class="contact-status"><span aria-hidden="true"></span>联系方式暂不公开</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer shell"><span>© <span id="year">2026</span> 超级无敌宇宙暴龙战士 · 用好奇心做点东西</span><a href="#top">回到顶部 ↑</a></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    const menuButton = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('#site-nav');
+    const toast = document.querySelector('#toast');
+    let toastTimer;
+
+    document.querySelector('#year').textContent = new Date().getFullYear();
+    menuButton.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      menuButton.setAttribute('aria-expanded', String(open));
+      menuButton.setAttribute('aria-label', open ? '关闭导航' : '打开导航');
+    });
+    nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+      nav.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.setAttribute('aria-label', '打开导航');
+    }));
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+    }
+
+    document.querySelector('#download-card').addEventListener('click', () => {
+      const card = [
+        'BEGIN:VCARD', 'VERSION:3.0',
+        'FN:超级无敌宇宙暴龙战士',
+        'N:超级无敌宇宙暴龙战士;;;;',
+        'TITLE:数字经济专业学生',
+        'NOTE:关注数据、产品与数字技术。个人数字名片。',
+        'END:VCARD', ''
+      ].join('\r\n');
+      const blob = new Blob([card], { type: 'text/vcard;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = '超级无敌宇宙暴龙战士.vcf';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      showToast('电子名片已下载');
+    });
+  </script>
+</body>
+</html>

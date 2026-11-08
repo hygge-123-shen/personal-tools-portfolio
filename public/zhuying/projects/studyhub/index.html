@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <title>知识岛 · 学习者的全栈社区</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body><p style="margin:0;padding:.5rem 1rem;text-align:center;background:#e4e9dd;color:#343e31;font-size:.85rem">只读作品预览 · 可浏览文章、问答和资源。发帖、互动与下单需启动原项目。</p>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="./index.html" aria-label="知识岛首页"><span class="brand-mark">知</span><span>知识岛</span></a>
+      <nav class="primary-nav" aria-label="主导航">
+        <button class="nav-link active" data-tab="posts">灵感文章</button>
+        <button class="nav-link" data-tab="questions">问答广场</button>
+        <button class="nav-link" data-tab="market">资源集市</button>
+      </nav>
+      <div class="top-actions">
+        <button class="icon-button cart-trigger" data-action="cart" aria-label="购物车"><span>▱</span><i id="cartCount">0</i></button>
+        <div id="accountArea"><button class="button button-dark" data-action="login">登录 / 注册</button></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="pulse"></span> LEARN · BUILD · SHARE</div>
+          <h1>把好奇心，<br><em>变成自己的作品。</em></h1>
+          <p>记录学习路径，交换解决方案，让每一个小小的实践都能被看见。</p>
+          <div class="hero-cta">
+            <button class="button button-primary" data-action="compose">开始分享 <span>↗</span></button>
+            <button class="text-button" data-action="learn-more">探索社区 <span>↓</span></button>
+          </div>
+        </div>
+        <div class="hero-art" aria-label="知识岛插画">
+          <div class="sun-disc"></div>
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="floating-note note-a"><b>✦</b><span>持续练习</span></div>
+          <div class="floating-note note-b"><b>↗</b><span>分享所得</span></div>
+          <div class="island">
+            <div class="island-tree"><i></i><i></i><i></i><b></b></div>
+            <div class="island-book">知</div>
+          </div>
+          <div class="hero-stat"><strong>01</strong><span>开始你的下一次<br>学习冒险</span></div>
+        </div>
+        <div class="hero-bottom"><span>今日灵感</span><span class="line"></span><span>慢慢来，也很快</span></div>
+      </section>
+
+      <section class="community-layout" id="community">
+        <div class="main-column">
+          <div class="section-head">
+            <div><div class="eyebrow muted">COMMUNITY FEED</div><h2 id="sectionTitle">灵感文章</h2></div>
+            <div id="sectionActions"></div>
+          </div>
+          <div id="pageContent" aria-live="polite"><div class="loading">正在准备知识岛…</div></div>
+        </div>
+        <aside class="side-column">
+          <div class="side-card welcome-card">
+            <div class="card-kicker">岛屿指南 <span>✦</span></div>
+            <h3>让学习留下<br>一点痕迹。</h3>
+            <p>写下你刚刚弄懂的概念，回答一个问题，或者把小工具分享给同行者。</p>
+            <button class="text-button" data-action="compose">发布第一篇 <span>↗</span></button>
+          </div>
+          <div class="side-card today-card">
+            <div class="card-kicker">本周小目标 <span>WEEK 01</span></div>
+            <div class="goal-row"><div class="goal-icon">✎</div><div><b>做一件小事</b><small>完成一个可以运行的切片</small></div></div>
+            <div class="goal-progress"><i></i></div>
+            <div class="goal-foot"><span>今天的进度</span><b>1 / 3</b></div>
+          </div>
+          <div class="side-quote"><span>“</span><p>最好的学习方式，是把刚学会的东西讲给别人听。</p><small>知识岛 · 今日寄语</small></div>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="footer"><a class="brand" href="./index.html"><span class="brand-mark small">知</span><span>知识岛</span></a><span>为每一次认真练习，留一座小岛。</span><span>本地全栈学习作品 · 2026</span></footer>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script>
+window.fetch = async function(input, options = {}) {
+  const url = new URL(input, 'http://preview.invalid');
+  const path = url.pathname;
+  function response(data, status = 200) {
+    return { ok: status < 400, status, json: async () => data };
+  }
+  if ((options.method || 'GET') !== 'GET') return response({error: '完整互动需启动知识岛原项目。'}, 403);
+  let data = {};
+  if (path.indexOf("/api/posts") === 0) data = {"items":[{"id":1,"title":"把一个想法拆成可交付的全栈功能","content":"先描述用户目标，再列数据模型和 API，最后安排页面与验收条件。每一轮只完成一个可以运行的小切片。","category":"项目方法","tags":["全栈","实践"],"author":"林序","author_id":1,"views":36,"created_at":"2026-10-29T09:20:00+08:00"},{"id":2,"title":"用一张图理解 Git 的三块区域","content":"工作区保存正在编辑的文件；git add 将选中的修改放进暂存区；git commit 把暂存内容保存为版本。推送到 GitHub 前，先检查 git status 和提交说明。","category":"开发工具","tags":["Git","入门"],"author":"阿澄","author_id":2,"views":24,"created_at":"2026-10-28T14:10:00+08:00"},{"id":3,"title":"小程序本地存储：从表单到列表","content":"使用本地存储 API 保存记录数组，页面 onShow 时重新读取。删除记录时按唯一 id 过滤，再写回本地存储。","category":"微信小程序","tags":["本地存储","JavaScript"],"author":"小禾","author_id":3,"views":18,"created_at":"2026-10-27T16:40:00+08:00"}],"total":3,"page":1,"pageSize":8,"categories":["开发工具","微信小程序","项目方法"]};
+  else if (path.indexOf("/api/questions") === 0) data = {"items":[{"id":1,"title":"为什么 git push 提示 rejected？","content":"我本地提交后推送被拒绝，提示远程有新的提交。安全的同步步骤是什么？","tags":["Git","协作"],"author":"予安","author_id":2,"views":19,"answers_count":3,"votes":8,"is_solved":false,"created_at":"2026-10-29T09:10:00+08:00"},{"id":2,"title":"SQLite 适合做课堂全栈演示吗？","content":"想要零配置运行，又能演示用户、订单和事务，有哪些注意点？","tags":["数据库","全栈"],"author":"林序","author_id":1,"views":31,"answers_count":2,"votes":5,"is_solved":true,"created_at":"2026-10-28T13:00:00+08:00"}]};
+  else if (path.indexOf("/api/products") === 0) data = {"items":[{"id":1,"name":"全栈项目拆解卡","description":"需求拆解与 API 设计练习卡。","price":19.9,"stock":40,"category":"项目工具","emoji":"🗂️"},{"id":2,"name":"Git 提交说明手册","description":"从 add、commit 到分支合并的中文速查小册。","price":12,"stock":60,"category":"开发工具","emoji":"📘"},{"id":3,"name":"小程序界面灵感包","description":"页面状态、空状态和表单交互设计清单。","price":16.5,"stock":35,"category":"设计资源","emoji":"🎨"}]};
+  if (!data.items) return response({error: '此功能需启动知识岛原项目。'}, 403);
+
+  const detail = path.match(/^\/api\/(posts|questions)\/(\d+)$/);
+  if (detail) {
+    const item = data.items.find(record => record.id === Number(detail[2]));
+    if (!item) return response({error: '未找到演示记录。'}, 404);
+    if (detail[1] === 'posts') return response({item});
+
+    const answers = [
+      {author: '学习者', content: '先查看状态，再执行 git pull --rebase 同步远程改动；如发生冲突，解决后继续 rebase，再推送。', votes: 5},
+      {author: '学习者', content: '很适合本地单机练习。启用外键、使用事务处理多表写入即可；生产环境应评估并发、备份和部署条件。', votes: 7, is_accepted: true}
+    ];
+    return response({item, answers: [{...answers[item.id - 1], id: item.id, created_at: item.created_at}], liked: false});
+  }
+  if (path === '/api/posts') {
+    const keyword = (url.searchParams.get('keyword') || '').toLowerCase();
+    const category = url.searchParams.get('category');
+    data.items = data.items.filter(item => (!category || item.category === category)
+      && `${item.title} ${item.content}`.toLowerCase().includes(keyword));
+  }
+  if (path === '/api/questions') {
+    const sort = url.searchParams.get('sort');
+    if (sort === 'hot') data.items.sort((a, b) => b.votes - a.votes);
+    if (sort === 'unsolved') data.items = data.items.filter(item => !item.is_solved);
+  }
+  return response(data);
+};
+</script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="竹影蝶记，超级无敌宇宙暴龙战士的个人网站作品集。">
+  <meta name="theme-color" content="#f6f2e9">
+  <title>竹影蝶记 · 超级无敌宇宙暴龙战士的个人作品集</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=4">
+  <script defer src="catalog.js"></script>
+  <script defer src="gallery.js?v=3"></script>
+</head>
+<body id="top">
+  <a class="skip" href="#about">跳到个人简介</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="#top"><img src="assets/mark.svg" alt="" width="37" height="37"><span>竹影蝶记<small>PERSONAL PORTFOLIO</small></span></a>
+      <nav aria-label="页面导航"><a href="#about">关于我</a><a href="#works">作品集</a></nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap editorial-grid" aria-labelledby="hero-title">
+      <div class="grid-rail" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span> PERSONAL PORTFOLIO</p>
+        <div class="hero-title-line"><h1 id="hero-title">竹影<span>蝶记</span></h1><span class="seal" aria-hidden="true">竹</span></div>
+        <p class="hero-subtitle">把学到的，做成能用的网站。</p>
+        <p class="intro">你好，我是<strong>超级无敌宇宙暴龙战士</strong>，一名数字经济专业学生。这里收藏了我做过的小网站，从日常工具、校园生活，到博客、问答和商城。</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#about">了解我 <span aria-hidden="true">↘</span></a>
+          <a class="button secondary" href="#works">浏览作品 <span aria-hidden="true">↘</span></a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="wash"></div>
+        <img class="motion-art" src="assets/bamboo.svg?v=3" alt="" width="660" height="610">
+        <div class="art-caption"><span>竹影入页</span><i></i><span>素纸成记</span></div>
+      </div>
+      <div class="hero-index"><span>向下阅读 <span aria-hidden="true">↓</span></span><button type="button" class="motion-toggle" hidden>暂停动效</button></div>
+    </section>
+
+    <section class="about wrap editorial-grid" id="about" aria-labelledby="about-title">
+      <div class="grid-rail" aria-hidden="true"></div>
+      <div class="about-main">
+        <p class="eyebrow"><span></span> 01 / PROFILE</p>
+        <h2 id="about-title">关于我</h2>
+        <div class="about-name"><span>超级无敌宇宙暴龙战士</span><i></i>数字经济专业学生</div>
+        <p>我关注数字经济、数据观察和产品实践。这个作品集记录了我的网页练习，从整理一份校园课表，到做出一个能发布内容、管理订单的小型应用。</p>
+        <dl class="about-list">
+          <div><dt><span>01</span> 个人成绩</dt><dd>绩点5.0</dd></div>
+          <div><dt><span>02</span> 个人成果</dt><dd>全国大学生数学建模大赛一等奖</dd></div>
+          <div><dt><span>03</span> 个人能力</dt><dd>我有超能力</dd></div>
+          <div><dt><span>04</span> 学习经历</dt><dd>我接受过10年+教育</dd></div>
+        </dl>
+      </div>
+      <section class="hobby-card" aria-labelledby="hobby-title">
+        <div class="hobby-label"><span>05 / 兴趣爱好</span><span>SPECIMEN № 01</span></div>
+        <div class="specimen"><img class="motion-art" src="assets/hobby-butterfly.svg" alt="" width="240" height="145"></div>
+        <div class="hobby-caption">
+          <p>蝶谱 / 采集记录</p>
+          <h3 id="hobby-title">兴趣小记</h3>
+          <dl class="hobby-notes">
+            <div><dt>读经典名著</dt><dd>喜欢跟着书里的人物，看看不同年代的人怎么生活、怎么做选择。</dd></div>
+            <div><dt>玩电子游戏</dt><dd>空闲时玩一会儿游戏，换换节奏，也试试不同的玩法。</dd></div>
+            <div><dt>做小网站</dt><dd>喜欢把课表、待办这类日常需求做成网页，再慢慢琢磨排版和配色。</dd></div>
+          </dl>
+        </div>
+      </section>
+    </section>
+
+    <section id="works" class="works" aria-labelledby="works-title">
+      <div class="wrap">
+        <p class="eyebrow"><span></span> 02 / PROJECT INDEX</p>
+        <div class="section-top">
+          <div><h2 id="works-title">作品一览</h2><p>打开作品看原来的页面，或先读一段项目介绍。</p></div>
+          <span class="work-total" id="work-total" aria-live="polite"></span>
+        </div>
+        <div class="filters" role="group" aria-label="按类别筛选作品">
+          <button type="button" data-filter="all" aria-pressed="true">全部作品</button>
+          <button type="button" data-filter="showcase" aria-pressed="false">个人与校园</button>
+          <button type="button" data-filter="tools" aria-pressed="false">实用工具</button>
+          <button type="button" data-filter="apps" aria-pressed="false">全栈练习</button>
+        </div>
+        <div class="work-grid editorial-grid" id="work-grid"></div>
+        <noscript><p>请启用 JavaScript 以浏览作品目录。</p></noscript>
+      </div>
+    </section>
+
+  </main>
+
+  <footer><div class="wrap footer-inner"><div class="footer-brand"><img src="assets/mark.svg" alt="" width="30" height="30"><span>竹影蝶记 <small>· 超级无敌宇宙暴龙战士</small></span></div><a href="#top">返回顶部 <span aria-hidden="true">↑</span></a></div></footer>
+
+  <dialog id="project-dialog" aria-labelledby="project-title">
+    <form method="dialog"><button class="dialog-close" aria-label="关闭作品介绍" autofocus>×</button></form>
+    <div class="dialog-body">
+      <p id="project-category" class="eyebrow"></p>
+      <h2 id="project-title"></h2>
+      <p id="project-description"></p>
+      <ul id="project-points"></ul>
+      <p class="project-note" id="project-note" hidden></p>
+      <a id="project-link" class="button primary" target="_blank" rel="noopener">打开作品 <span aria-hidden="true">↗</span></a>
+    </div>
+  </dialog>
+</body>
+</html>

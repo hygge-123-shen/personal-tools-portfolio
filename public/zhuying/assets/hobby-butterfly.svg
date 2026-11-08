@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 145" fill="none" role="img" aria-label="展开双翼的蝶类标本插画">
+  <defs>
+    <linearGradient id="upper-ink" x1="120" y1="80" x2="29" y2="23" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#704530"/>
+      <stop offset=".58" stop-color="#C97B4A"/>
+      <stop offset="1" stop-color="#875638"/>
+    </linearGradient>
+    <linearGradient id="lower-ink" x1="115" y1="79" x2="71" y2="119" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#68442E"/>
+      <stop offset=".65" stop-color="#C97B4A"/>
+      <stop offset="1" stop-color="#8D5138"/>
+    </linearGradient>
+    <g id="half" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M118 77C103 71 85 75 72 81C64 85 61 91 63 98C59 102 62 109 69 110C69 116 76 120 82 117C85 123 91 125 97 120C102 122 107 118 107 112C115 107 117 93 118 77Z" fill="url(#lower-ink)" stroke="#E8DFC8" stroke-width=".9"/>
+      <path d="M116 80C106 84 91 84 76 87C69 90 67 94 68 99C66 103 70 107 75 107C76 113 80 114 85 112C88 118 92 118 96 114C102 117 104 111 104 108C111 100 114 91 116 80Z" stroke="#E8DFC8" stroke-opacity=".57" stroke-width=".65"/>
+      <path d="M116 80Q101 85 70 94M116 81Q98 91 73 105M116 81Q101 100 85 112M116 81Q106 101 96 114M115 85Q111 101 104 108M91 89L85 98M103 96L99 107" stroke="#E8DFC8" stroke-opacity=".65" stroke-width=".62"/>
+      <path d="M117 75C104 49 79 29 55 24C44 21 32 21 28 26C24 32 31 43 36 49C36 56 40 63 48 65C49 71 55 75 62 75C64 82 72 84 80 82C86 87 94 86 99 83C105 86 113 82 117 75Z" fill="url(#upper-ink)" stroke="#E8DFC8" stroke-width="1.05"/>
+      <path d="M112 72C96 51 73 34 52 30C42 28 35 28 33 31C34 38 39 43 42 47C42 54 46 58 52 60C55 66 60 69 66 69C69 75 74 77 81 75C85 80 91 81 98 77C104 81 109 78 112 72Z" stroke="#E8DFC8" stroke-opacity=".66" stroke-width=".65"/>
+      <path d="M116 76Q97 58 77 54Q53 49 34 34M115 76Q91 53 55 31M110 70Q92 47 73 39M115 76Q82 66 42 47M113 77Q89 73 52 60M110 78Q90 80 66 69M108 79Q94 83 81 75M79 55Q71 51 61 45L49 43M92 63Q87 53 78 47M69 62L60 57M81 70Q78 67 75 64" stroke="#E8DFC8" stroke-opacity=".77" stroke-width=".67"/>
+      <path d="M39 34C42 32 47 33 51 35C48 39 42 39 39 34ZM45 45C49 43 53 44 56 47C53 50 48 49 45 45ZM56 58C59 56 64 57 66 60C63 63 59 61 56 58ZM70 69C73 66 76 67 79 70C76 73 73 72 70 69ZM81 109C79 106 82 102 86 102C90 105 87 110 81 109ZM92 113C89 110 91 106 94 106C97 109 96 112 92 113Z" fill="#1B2A22" fill-opacity=".78" stroke="#E8DFC8" stroke-opacity=".62" stroke-width=".55"/>
+      <path d="M42 34L46 35M49 45L52 46M60 58L63 59M74 69L76 70M84 105L84.5 106M93 108L93.5 109" stroke="#E8DFC8" stroke-width=".76"/>
+      <path d="M30 29C38 23 62 26 80 38M65 101Q65 105 70 107M82 118Q88 121 93 119M37 52L39 57M50 66L53 69M64 76L67 78M81 83L86 84" stroke="#E8DFC8" stroke-opacity=".62" stroke-width=".62"/>
+    </g>
+  </defs>
+  <style>
+    .wing { transform-origin: 120px 78px; }
+    @media (prefers-reduced-motion: no-preference) {
+      .wing { animation: settle 820ms 110ms ease-in-out both; }
+      #still:target ~ .wing { animation: none; }
+    }
+    @keyframes settle {
+      0%, 42%, 100% { transform: scaleX(1); }
+      23% { transform: scaleX(.93); }
+      67% { transform: scaleX(.97); }
+    }
+  </style>
+  <g id="still" stroke="#E8DFC8" stroke-opacity=".33" stroke-width=".55" stroke-linecap="round">
+    <path d="M14 28V17H25M215 17H226V28M14 113V124H25M215 124H226V113M120 12V21M115.5 16.5H124.5M120 124V133M115.5 128.5H124.5"/>
+    <path d="M22 72H35M205 72H218M29 69V75M211 69V75"/>
+  </g>
+  <g class="wing"><use href="#half"/></g>
+  <g class="wing"><use href="#half" transform="translate(240 0) scale(-1 1)"/></g>
+  <path d="M119.8 67C117 63 112 57 107 55M120.2 67C123 63 128 57 133 55" stroke="#E8DFC8" stroke-width=".8" stroke-linecap="round"/>
+  <circle cx="106.5" cy="54.8" r=".85" fill="#E8DFC8"/>
+  <circle cx="133.5" cy="54.8" r=".85" fill="#E8DFC8"/>
+  <path d="M120 67.5C116.5 67.5 116.5 73.3 118.2 76.8C116.3 82.4 117.1 93.5 120 100.4C122.9 93.5 123.7 82.4 121.8 76.8C123.5 73.3 123.5 67.5 120 67.5Z" fill="#352C25" stroke="#E8DFC8" stroke-width=".85"/>
+  <path d="M120 74V94M118.5 83H121.5M118.6 86.4H121.4M118.9 90H121.1" stroke="#E8DFC8" stroke-opacity=".56" stroke-width=".55" stroke-linecap="round"/>
+</svg>

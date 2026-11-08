@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f6fa">
+  <title>问知 · 让每个好问题都有回响</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <p style="margin:0;padding:.5rem 1rem;text-align:center;background:#e4e9dd;color:#343e31;font-size:.85rem">只读作品预览 · 可浏览问题和回答。发布、点赞和采纳需启动原项目。</p>
+  <header class="site-header"><div class="header-inner">
+    <a href="#questions" class="brand" aria-label="问知首页"><span class="brand-icon">问</span><strong>问知</strong><span class="brand-caption">好奇心的交流站</span></a>
+    <a class="header-link" href="#questions">发现问题</a>
+    <label class="header-search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="搜索你想弄懂的问题" aria-label="搜索问题" maxlength="120"></label>
+    <div id="authArea" class="auth-area"></div>
+  </div></header>
+  <div class="page-shell">
+    <main id="main" tabindex="-1"><div class="loading">正在整理大家的好问题…</div></main>
+    <aside id="sidebar" class="sidebar" aria-label="社区信息"></aside>
+  </div>
+  <footer class="site-footer"><b>问知</b><span>把问题问清楚，把经验留下来。</span><span>好问题，值得一起想。</span></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="../course-preview.js" defer></script>
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
