@@ -1,4 +1,4 @@
-installCoursePreview('questions', {
+installQuestionDemo({
   "questions": [
     {
       "id": 1,

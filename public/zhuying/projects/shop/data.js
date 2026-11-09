@@ -1,4 +1,4 @@
-installCoursePreview('shop', {
+const shopExamples = {
   "products": [
     {
       "id": 1,
@@ -55,4 +55,4 @@ installCoursePreview('shop', {
       "image": "/assets/cards.svg"
     }
   ]
-});
+};

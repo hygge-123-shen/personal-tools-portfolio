@@ -1,4 +1,4 @@
-installCoursePreview('blog', {
+installBlogDemo({
   "posts": [
     {
       "id": 1,

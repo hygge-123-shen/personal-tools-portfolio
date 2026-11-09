@@ -1,4 +1,4 @@
-const state = {token: '', user: null, sort: 'latest', tag: '', keyword: '', page: 1, qid: null, answerPage: 1, detail: null, community: null, loadId: 0};
+const state = {token: window.ZhuyingDemo.getSession()?.token || '', user: null, sort: 'latest', tag: '', keyword: '', page: 1, qid: null, answerPage: 1, detail: null, community: null, loadId: 0};
 const $ = (selector, root = document) => root.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const date = value => { const d = new Date(value); return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('zh-CN', {month: 'short', day: 'numeric'}); };
@@ -12,12 +12,12 @@ async function api(path, options = {}) {
   let payload = {};
   try { payload = await response.json(); } catch { throw new Error('服务返回了无法读取的结果，请稍后重试'); }
   if (!response.ok) {
-    if (response.status === 401 && state.token) { state.token = ''; state.user = null; localStorage.removeItem('wenzhi-token'); renderAuth(); }
+    if (response.status === 401 && state.token) { state.token = ''; state.user = null; renderAuth(); }
     throw new Error(payload.error || '请求未能完成，请稍后重试');
   }
   return payload;
 }
-function renderAuth() { $('#authArea').innerHTML = state.user ? `<button class="user-button" data-action="profile">${avatar(state.user.username, state.user.avatar)}<span class="user-label">${esc(state.user.username)}<small>${state.user.points} 积分</small></span></button>` : '<button class="button secondary" data-action="login">登录 / 注册</button>'; }
+function renderAuth() { $('#authArea').innerHTML = state.user ? `<button class="user-button" data-action="profile">${avatar(state.user.display_name || state.user.username, state.user.avatar)}<span class="user-label">${esc(state.user.display_name || state.user.username)}<small>${state.user.points} 积分</small></span></button>` : '<button class="button secondary" data-action="login">课堂登录</button>'; }
 async function refreshUser() { if (state.token) { state.user = (await api('/api/me')).user; } renderAuth(); }
 function requireUser() { if (state.user) return true; openAuth(); return false; }
 function closeDialog() { const dialog = $('#appDialog'); if (dialog) { dialog.close(); dialog.remove(); } }
@@ -25,13 +25,15 @@ function openDialog(title, subtitle, content) {
   closeDialog(); document.body.insertAdjacentHTML('beforeend', `<dialog id="appDialog" aria-labelledby="dialogTitle"><div class="dialog-inner"><div class="dialog-head"><div><h2 id="dialogTitle">${esc(title)}</h2><p>${esc(subtitle)}</p></div><button class="close-button" data-action="close" aria-label="关闭">×</button></div>${content}</div></dialog>`);
   const dialog = $('#appDialog'); dialog.addEventListener('click', event => { if (event.target === dialog) closeDialog(); }); dialog.showModal();
 }
-function openAuth() { toast("只读预览。登录和参与讨论需启动问知原项目。"); }
+function openAuth() {
+  openDialog('登录课堂演示账号', '登录后可以提问、回答或赞同示例讨论。', `<form data-form="login"><div class="form-field"><label for="authUsername">演示账号</label><input id="authUsername" name="username" value="${esc(window.ZhuyingDemo.USERNAME)}" autocomplete="username" required></div><div class="form-field"><label for="authPassword">演示密码</label><input id="authPassword" name="password" type="password" autocomplete="current-password" required><p class="form-hint">课堂演示密码 ${esc(window.ZhuyingDemo.PASSWORD)}。</p></div><div class="inline-error" role="alert"></div><div class="form-bottom"><button class="button" type="submit">登录</button></div></form>`);
+}
 function editor(name, label, minLength) { return `<div class="editor-grid"><div class="editor-pane"><div class="editor-label"><span>${esc(label)}</span><span>Markdown</span></div><textarea name="${name}" data-preview-input required minlength="${minLength}" maxlength="20000" aria-label="${esc(label)}" placeholder="描述背景、已经尝试过的办法，或写下一段代码…"></textarea></div><div class="editor-pane"><div class="editor-label"><span>实时预览</span><span>PREVIEW</span></div><div class="preview markdown" data-preview><p class="preview-placeholder">你写下的内容会在这里排版。</p></div></div></div>`; }
 function openQuestionComposer() { if (!requireUser()) return; openDialog('提出一个好问题', '写清问题背景和尝试过程，更容易得到有用的回答。', `<form data-form="question"><div class="form-field"><label for="questionTitle">问题标题</label><input id="questionTitle" name="title" required minlength="5" maxlength="120" placeholder="用一句话说清你想解决的问题"></div><div class="form-field"><label>问题描述</label>${editor('content', '编辑描述', 10)}</div><div class="form-field"><label for="questionTags">标签</label><input id="questionTags" name="tags" maxlength="200" placeholder="例如：MySQL, API, 全栈入门"><p class="form-hint">用逗号分隔，最多 8 个标签，每个不超过 24 字。</p></div><div class="inline-error" role="alert"></div><div class="form-bottom"><small>发布将扣除 5 积分 · 当前 ${state.user.points} 积分</small><button class="button" type="submit">发布问题</button></div></form>`); }
 function openProfile() {
   if (!requireUser()) return;
-  const u = state.user;
-  openDialog('我的小小积累', '完善资料，让每次交流多一份熟悉。', `<div class="profile-summary">${avatar(u.username, u.avatar)}<b>${u.points}</b><span>社区积分 · 回答 +10，被采纳 +30</span></div><form data-form="profile"><div class="two-columns"><div class="form-field"><label for="profileName">用户名</label><input id="profileName" name="username" value="${esc(u.username)}" required minlength="3" maxlength="20"></div><div class="form-field"><label for="profileEmail">邮箱</label><input id="profileEmail" name="email" value="${esc(u.email)}" type="email" required maxlength="120"></div></div><div class="form-field"><label for="profileAvatar">头像</label><div class="upload-row"><input type="file" id="avatarUpload" accept="image/png,image/jpeg,image/webp,image/gif" aria-label="上传头像"><button type="button" class="button secondary" data-action="upload-avatar">上传</button></div><input id="profileAvatar" name="avatar" value="${esc(u.avatar || '')}" placeholder="上传后自动填入图片地址"><p class="form-hint">可上传 JPG、PNG、GIF 或 WebP，最大 5MB。</p></div><div class="form-field"><label for="profileBio">个人简介</label><textarea id="profileBio" name="bio" maxlength="300" style="min-height:90px" placeholder="最近在研究什么？">${esc(u.bio || '')}</textarea></div><div class="inline-error" role="alert"></div><div class="form-bottom"><button type="button" class="button danger" data-action="logout">退出登录</button><button class="button" type="submit">保存资料</button></div></form>`);
+  const user = state.user;
+  openDialog('课堂演示账号', '体验记录和积分保存在当前浏览器。', '<div class="profile-summary">' + avatar(user.display_name || user.username) + '<b>' + user.points + '</b><span>社区积分</span></div><button type="button" class="button danger" data-action="logout">退出登录</button>');
 }
 function tagButtons(tags) { return `<span class="tags">${(tags || []).map(tag => `<button class="tag ${state.tag === tag ? 'active' : ''}" data-action="tag" data-tag="${esc(tag)}">${esc(tag)}</button>`).join('')}</span>`; }
 function pagination(page, size, total, action) {
@@ -88,7 +90,7 @@ document.addEventListener('click', async event => {
     else if (action === 'close') closeDialog();
     else if (action === 'compose') openQuestionComposer();
     else if (action === 'profile') openProfile();
-    else if (action === 'logout') { state.user = null; state.token = ''; localStorage.removeItem('wenzhi-token'); closeDialog(); renderAuth(); if (state.qid) await loadDetail(state.qid, false); toast('已退出登录'); }
+    else if (action === 'logout') { window.ZhuyingDemo.logout(); state.user = null; state.token = ''; closeDialog(); renderAuth(); if (state.qid) await loadDetail(state.qid, false); toast('已退出登录'); }
     else if (action === 'sort') { state.sort = button.dataset.sort; state.page = 1; goList(); }
     else if (action === 'tag') { state.tag = button.dataset.tag; state.page = 1; goList(); }
     else if (action === 'clear-tag') { state.tag = ''; state.page = 1; goList(); }
@@ -121,9 +123,9 @@ document.addEventListener('submit', async event => {
   const submit = $('[type=submit]', form); if (submit.disabled) return; submit.disabled = true;
   const error = $('.inline-error', form); if (error) error.textContent = '';
   try {
-    if (type === 'login' || type === 'register') {
+    if (type === 'login') {
       const result = await api('/api/auth/' + type, {method: 'POST', body: JSON.stringify(values)});
-      state.token = result.token; state.user = result.user; localStorage.setItem('wenzhi-token', state.token); closeDialog(); renderAuth(); toast('欢迎你，' + state.user.username);
+      state.token = result.token; await refreshUser(); closeDialog(); toast('已登录课堂演示账号');
       if (state.qid) await loadDetail(state.qid, false); else await loadList(); await loadCommunity();
     } else if (type === 'question') {
       values.tags = values.tags.split(/[,，]/).map(t => t.trim()).filter(Boolean);

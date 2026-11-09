@@ -1,13 +1,13 @@
 const state = {
-  token: '',
-  user: null, categories: [], authMode: "login", pendingHash: "",
+  token: window.ZhuyingDemo.getSession()?.token || '',
+  user: null, categories: [], pendingHash: "",
   lastListHash: "#/posts", routeVersion: 0, previewVersion: 0, previewTimer: null
 };
 const $ = (selector, root = document) => root.querySelector(selector);
 const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const safeUrl = value => /^(\/uploads\/|\/assets\/|https?:\/\/)/i.test(value || "") ? value.replace(/^\/assets\//, "./assets/") : "";
 function avatar(user, large = false) {
-  const name = user.username || user.author || "纸";
+  const name = user.display_name || user.username || user.author || "纸";
   const url = safeUrl(user.avatar || user.author_avatar);
   return '<span class="avatar' + (large ? ' large' : '') + '">' + (url ? '<img src="' + esc(url) + '" alt="">' : esc(name.slice(0, 1))) + '</span>';
 }
@@ -32,7 +32,7 @@ async function api(path, options = {}) {
   catch { throw new Error("暂时无法连接博客服务，请确认项目已启动后重试。"); }
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    if (response.status === 401) { state.token = ""; state.user = null; localStorage.removeItem("paper-blog-token"); renderAccount(); }
+    if (response.status === 401) { state.token = ""; state.user = null; renderAccount(); }
     throw new Error(data.error || "操作未完成，请稍后重试。");
   }
   return data;
@@ -47,16 +47,20 @@ function listHash(params = {}) {
 }
 function renderAccount() {
   $("#accountArea").innerHTML = state.user
-    ? '<button class="account-button" data-action="profile">' + avatar(state.user) + '<span>' + esc(state.user.username) + '</span></button>'
-    : '<button class="button ghost small" data-action="login">登录 / 注册</button>';
+    ? '<button class="account-button" data-action="profile">' + avatar(state.user) + '<span>' + esc(state.user.display_name || state.user.username) + '</span></button>'
+    : '<button class="button ghost small" data-action="login">课堂登录</button>';
 }
 function requireAuth(hash) {
   if (state.user) return true;
-  state.pendingHash = hash || location.hash; openAuth("login");
-  $("#page").innerHTML = '<div class="empty"><b>这一页，留给登录后的你。</b>登录后可以写文章、管理自己的内容与个人资料。<br><button class="button primary" data-action="login">登录 / 注册</button><br><a class="back-link" href="#/posts">返回文章列表</a></div>';
+  state.pendingHash = hash || location.hash; openAuth();
+  $("#page").innerHTML = '<div class="empty"><b>这一页，留给登录后的你。</b>登录课堂演示账号后可以写文章并管理自己的内容。<br><button class="button primary" data-action="login">课堂登录</button><br><a class="back-link" href="#/posts">返回文章列表</a></div>';
   return false;
 }
-function openAuth() { toast("只读预览。登录与写作需启动纸间原项目。"); }
+function openAuth() {
+  $("#authTitle").textContent = "登录课堂演示账号";
+  $("#authContent").innerHTML = '<form data-form="auth"><div class="field"><label for="authUsername">演示账号</label><input id="authUsername" name="username" autocomplete="username" value="' + esc(window.ZhuyingDemo.USERNAME) + '" required></div><div class="field"><label for="authPassword">演示密码</label><input id="authPassword" name="password" type="password" autocomplete="current-password" required><small>课堂演示密码 ' + esc(window.ZhuyingDemo.PASSWORD) + '。</small></div><div class="form-error" data-form-error role="alert"></div><button class="button primary" type="submit">登录</button></form>';
+  if (!$("#authDialog").open) $("#authDialog").showModal();
+}
 function tagLinks(tags, filters = {}) {
   return '<span class="tags">' + (tags || []).map(tag => '<a href="' + esc(listHash({...filters, tag, page:"", pageSize:""})) + '"># ' + esc(tag) + '</a>').join("") + '</span>';
 }
@@ -104,7 +108,7 @@ async function renderEditor(id, version) {
   if (version !== state.routeVersion) return;
   const p = result?.item || {title:"",content:"",tags:[],cover:"",category_id:state.categories[0]?.id};
   if (id && Number(p.author_id) !== Number(state.user.id)) throw new Error("只能编辑自己发布的文章。");
-  $("#page").innerHTML = '<section class="editor-shell"><a class="back-link" href="' + esc(id ? '#/post/' + id : state.lastListHash) + '">← ' + (id ? '返回文章' : '返回文章列表') + '</a><form data-form="post" data-id="' + (id || '') + '"><div class="editor-heading"><div><p class="eyebrow">YOUR WRITING DESK</p><h1>' + (id ? '给这篇文章，再一点打磨。' : '今天，想写点什么？') + '</h1><p>左边专注写作，右边看看文字呈现的样子。</p></div><div class="editor-actions"><a class="button ghost" href="' + esc(id ? '#/post/' + id : state.lastListHash) + '">取消</a><button class="button primary" type="submit">' + (id ? '保存修改' : '发布文章') + '</button></div></div><div class="field"><label class="visually-hidden" for="postTitle">文章标题</label><input class="title-input" id="postTitle" name="title" value="' + esc(p.title) + '" required maxlength="100" placeholder="为这段记录，起一个标题"></div><div class="form-grid"><div class="field"><div class="label-line"><label for="postCategory">文章分类</label><button type="button" class="text-link" data-action="manage-categories">管理分类</button></div><select id="postCategory" name="category_id" required>' + categoryOptions(p.category_id) + '</select></div><div class="field"><label for="postTags">标签</label><input id="postTags" name="tags" value="' + esc((p.tags || []).join(", ")) + '" placeholder="全栈, 学习笔记, 实践"><small>用英文或中文逗号分隔，最多 8 个标签，每个不超过 24 字。</small></div></div><div class="cover-field"><div class="cover-thumb" id="coverPreview">' + (safeUrl(p.cover) ? '<img src="' + esc(p.cover) + '" alt="封面预览">' : '＋') + '</div><div><p>为文章选一张封面（可选）</p><div class="cover-tools"><label class="upload-label">上传图片<input type="file" data-upload="cover" accept="image/png,image/jpeg,image/gif,image/webp"></label><button type="button" class="text-link" data-action="remove-cover">移除封面</button></div><p>支持 PNG / JPEG / GIF / WebP，最大 5 MB。</p></div><input type="hidden" id="coverValue" name="cover" value="' + esc(p.cover) + '"></div><label class="visually-hidden" for="contentInput">文章 Markdown 正文</label><div class="editor-pane"><div class="edit-half"><div class="pane-label">MARKDOWN <small id="charCount">' + p.content.length + ' / 50000 字符</small></div><textarea id="contentInput" name="content" required maxlength="50000" spellcheck="false" placeholder="# 从一个想法开始&#10;&#10;写下过程，也留下思考…">' + esc(p.content) + '</textarea></div><div class="edit-half"><div class="pane-label">实时预览 <small>自动更新</small></div><div class="markdown" id="markdownPreview"><p class="preview-placeholder">写下第一行后，预览会出现在这里。</p></div></div></div><div class="help-row"><span>常用语法：# 标题　**粗体**　- 列表　三个反引号包围代码块</span><span>内容将保存到本地 MySQL</span></div><div class="form-error" data-form-error role="alert"></div></form></section>';
+  $("#page").innerHTML = '<section class="editor-shell"><a class="back-link" href="' + esc(id ? '#/post/' + id : state.lastListHash) + '">← ' + (id ? '返回文章' : '返回文章列表') + '</a><form data-form="post" data-id="' + (id || '') + '"><div class="editor-heading"><div><p class="eyebrow">YOUR WRITING DESK</p><h1>' + (id ? '给这篇文章，再一点打磨。' : '今天，想写点什么？') + '</h1><p>左边专注写作，右边看看文字呈现的样子。</p></div><div class="editor-actions"><a class="button ghost" href="' + esc(id ? '#/post/' + id : state.lastListHash) + '">取消</a><button class="button primary" type="submit">' + (id ? '保存修改' : '发布文章') + '</button></div></div><div class="field"><label class="visually-hidden" for="postTitle">文章标题</label><input class="title-input" id="postTitle" name="title" value="' + esc(p.title) + '" required maxlength="100" placeholder="为这段记录，起一个标题"></div><div class="form-grid"><div class="field"><div class="label-line"><label for="postCategory">文章分类</label><button type="button" class="text-link" data-action="manage-categories">管理分类</button></div><select id="postCategory" name="category_id" required>' + categoryOptions(p.category_id) + '</select></div><div class="field"><label for="postTags">标签</label><input id="postTags" name="tags" value="' + esc((p.tags || []).join(", ")) + '" placeholder="全栈, 学习笔记, 实践"><small>用英文或中文逗号分隔，最多 8 个标签，每个不超过 24 字。</small></div></div><label class="visually-hidden" for="contentInput">文章 Markdown 正文</label><div class="editor-pane"><div class="edit-half"><div class="pane-label">MARKDOWN <small id="charCount">' + p.content.length + ' / 50000 字符</small></div><textarea id="contentInput" name="content" required maxlength="50000" spellcheck="false" placeholder="# 从一个想法开始&#10;&#10;写下过程，也留下思考…">' + esc(p.content) + '</textarea></div><div class="edit-half"><div class="pane-label">实时预览 <small>自动更新</small></div><div class="markdown" id="markdownPreview"><p class="preview-placeholder">写下第一行后，预览会出现在这里。</p></div></div></div><div class="help-row"><span>常用语法：# 标题　**粗体**　- 列表　三个反引号包围代码块</span><span>体验文章保存在当前浏览器</span></div><div class="form-error" data-form-error role="alert"></div></form></section>';
   updatePreview(p.content);
 }
 async function updatePreview(content) {
@@ -118,8 +122,8 @@ async function updatePreview(content) {
 }
 function renderProfile() {
   if (!requireAuth(location.hash)) return;
-  const u = state.user;
-  $("#page").innerHTML = '<section class="profile-shell"><a class="back-link" href="#/posts">← 返回文章列表</a><div class="profile-heading"><p class="eyebrow">ABOUT THE WRITER</p><h1>让读者，多认识你一点。</h1><p>更新头像和简介，也为自己的文字添一个落款。</p></div><div class="profile-layout"><aside class="profile-card">' + avatar(u, true) + '<h3>' + esc(u.username) + '</h3><p>' + esc(u.bio || '每一次认真记录，都在慢慢成形。') + '</p><a class="button ghost small" href="#/posts?mine=1">查看我的文章 →</a></aside><form class="profile-form" data-form="profile"><div class="avatar-edit"><div id="avatarPreview">' + avatar(u, true) + '</div><div><label class="upload-label">更换头像<input type="file" data-upload="avatar" accept="image/png,image/jpeg,image/gif,image/webp"></label><p>支持常见图片格式，最大 5 MB。</p><button type="button" class="text-link" data-action="remove-avatar">使用文字头像</button></div><input type="hidden" name="avatar" id="avatarValue" value="' + esc(u.avatar || '') + '"></div><div class="field"><label for="profileUsername">用户名</label><input id="profileUsername" name="username" required minlength="3" maxlength="20" value="' + esc(u.username) + '"><small>3–20 个字符，不能与其他账号重复。</small></div><div class="field"><label for="profileEmail">邮箱</label><input id="profileEmail" name="email" type="email" required maxlength="120" value="' + esc(u.email) + '"></div><div class="field"><label for="profileBio">个人简介</label><textarea id="profileBio" name="bio" maxlength="300" rows="4" placeholder="向读者介绍一下自己…">' + esc(u.bio || '') + '</textarea><small>最多 300 字。</small></div><div class="form-end"><span>加入于 ' + formatDate(u.created_at) + ' · 个人信息保存在本机数据库</span><button class="button primary" type="submit">保存资料</button></div><div class="form-error" data-form-error role="alert"></div><button type="button" class="text-link" data-action="logout">退出当前账号</button></form></div></section>';
+  const user = state.user;
+  $("#page").innerHTML = '<section class="profile-shell"><a class="back-link" href="#/posts">← 返回文章列表</a><div class="profile-heading"><p class="eyebrow">ABOUT THE WRITER</p><h1>课堂演示账号</h1><p>你可以查看自己在这个浏览器里写下的文章。</p></div><div class="profile-card">' + avatar(user, true) + '<h3>' + esc(user.display_name || user.username) + '</h3><a class="button ghost small" href="#/posts?mine=1">查看我的文章 →</a><button type="button" class="button ghost small" data-action="logout">退出当前账号</button></div></section>';
 }
 async function route() {
   const version = ++state.routeVersion;
@@ -165,7 +169,7 @@ document.addEventListener("click", async event => {
     else if (action === "login") openAuth("login");
     else if (action === "auth-mode") openAuth(button.dataset.mode);
     else if (action === "close-auth") { state.pendingHash = ""; $("#authDialog").close(); }
-    else if (action === "logout") { state.user = null; state.token = ""; localStorage.removeItem("paper-blog-token"); renderAccount(); toast("已退出登录"); navigate("#/posts"); }
+    else if (action === "logout") { window.ZhuyingDemo.logout(); state.user = null; state.token = ""; renderAccount(); toast("已退出登录"); navigate("#/posts"); }
     else if (action === "remove-cover") { $("#coverValue").value = ""; $("#coverPreview").textContent = "＋"; }
     else if (action === "remove-avatar") { $("#avatarValue").value = ""; $("#avatarPreview").innerHTML = avatar({username:state.user.username}, true); }
     else if (action === "delete-post") {
@@ -204,10 +208,10 @@ document.addEventListener("submit", async event => {
   submit.disabled = true; submit.textContent = "正在保存…";
   try {
     if (type === "auth") {
-      const data = await api("/api/auth/" + state.authMode, {method:"POST", body:values});
-      state.user = data.user; state.token = data.token; localStorage.setItem("paper-blog-token", data.token);
+      const data = await api("/api/auth/login", {method:"POST", body:values});
+      state.user = data.user; state.token = data.token;
       const target = state.pendingHash || location.hash || "#/posts"; state.pendingHash = "";
-      renderAccount(); $("#authDialog").close(); toast("你好，" + state.user.username); navigate(target);
+      renderAccount(); $("#authDialog").close(); toast("已登录课堂演示账号"); navigate(target);
     } else if (type === "post") {
       values.category_id = Number(values.category_id);
       values.tags = values.tags.split(/[,，]/).map(x => x.trim()).filter(Boolean);
@@ -261,7 +265,7 @@ window.addEventListener("hashchange", route);
   renderAccount();
   if (state.token) {
     try { state.user = (await api("/api/me")).user; renderAccount(); }
-    catch { state.token = ""; localStorage.removeItem("paper-blog-token"); renderAccount(); }
+    catch { state.token = ""; renderAccount(); }
   }
   await route();
 })();

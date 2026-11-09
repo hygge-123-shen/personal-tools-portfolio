@@ -64,7 +64,7 @@ nav a:hover, footer a:hover { color: var(--ink); text-decoration: underline; tex
 .seal { align-self: end; margin-bottom: .25em; padding: .14em; border: 2px solid currentColor; border-radius: 2px; color: #a63d2f; font: 700 clamp(18px, 2.3vw, 31px)/1 var(--serif); transform: rotate(-7deg); }
 .hero-subtitle { font: 700 clamp(20px, 2vw, 27px)/1.65 var(--serif); letter-spacing: .04em; }
 .intro { margin-top: 13px; max-width: 365px; color: var(--muted); line-height: 1.95; }
-.button { display: inline-flex; align-items: center; justify-content: space-between; gap: 23px; width: fit-content; min-height: 45px; padding: 8px 15px; border: 1px solid transparent; border-radius: 4px; font-size: 14px; font-weight: 600; transition: background-color .18s ease; }
+.button { display: inline-flex; align-items: center; justify-content: space-between; gap: 23px; width: fit-content; min-height: 45px; padding: 8px 15px; border: 1px solid transparent; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color .18s ease; }
 .button.primary { background: var(--green); color: #fffef8; }
 .button.primary:hover { background: #304732; }
 .button.secondary { border-color: #cdd4c3; color: var(--green); }
@@ -177,6 +177,14 @@ dialog::backdrop { background: #26332873; }
 .dialog-body > p:not(.eyebrow), .dialog-body ul { color: var(--muted); }
 .dialog-body ul { padding-left: 20px; margin: 12px 0 18px; }
 .project-note { font-size: 13px; padding: 9px 12px; background: #eceee4; border-left: 2px solid #aab59e; margin-bottom: 16px; }
+.demo-notice { color: var(--green); font-size: 14px; margin-top: 9px; }
+#demo-toggle { background: var(--white); }
+#demo-toggle:hover { background: #e8ecdf; }
+#demo-form { display: grid; gap: 10px; margin-top: 16px; }
+#demo-form label { display: grid; gap: 3px; font-size: 14px; font-weight: 700; }
+#demo-form input { padding: 8px 10px; border: 1px solid var(--line); border-radius: 3px; background: var(--white); color: var(--ink); font: inherit; }
+#demo-feedback { color: #a63d2f; font-size: 14px; }
+#demo-feedback:empty { display: none; }
 
 @media (max-width: 980px) {
   .wrap { width: calc(100% - 70px); }

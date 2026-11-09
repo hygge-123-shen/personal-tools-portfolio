@@ -3,20 +3,22 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f5f3ec"><title>拾物 · 给日常一点好物</title>
-  <link rel="stylesheet" href="styles.css"><script src="../course-preview.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
+  <script src="../../demo-session.js" defer></script>
   <script src="data.js" defer></script>
+  <script src="shop-demo.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
-  <p style="margin:0;padding:.5rem 1rem;text-align:center;background:#e4e9dd;color:#343e31;font-size:.85rem">只读作品预览 · 可浏览商品和筛选选集。购物车、地址与订单需启动原项目。</p>
+  <p style="margin:0;padding:.5rem 1rem;text-align:center;background:#e4e9dd;color:#343e31;font-size:.85rem">课堂演示 · 登录演示账号后可加入购物袋、使用示例地址下单和取消订单。数据保存在当前浏览器，不会付款或配送。</p>
   <div class="notice">一间关于纸、笔与日常的小店 <span>· 本地商城练习 · 订单不发生真实支付</span></div>
   <header class="site-header">
     <a href="#catalog" class="brand" data-view="catalog"><span class="brand-symbol">拾</span><span>拾物 <small>SHIWU STUDIO</small></span></a>
     <nav aria-label="主导航"><button data-view="catalog" class="active">好物选集</button><button data-view="orders">我的订单</button><button data-view="addresses">地址簿</button></nav>
-    <div class="header-actions"><button class="cart-nav" data-view="cart" aria-label="打开购物车">购物袋 <span id="cartCount">0</span></button><button class="account-button" id="accountButton" data-action="login">登录 / 注册</button></div>
+    <div class="header-actions"><button class="cart-nav" data-view="cart" aria-label="打开购物车">购物袋 <span id="cartCount">0</span></button><button class="account-button" id="accountButton" data-action="login">演示登录</button></div>
   </header>
   <main id="content" aria-live="polite"><div class="loading">正在打开拾物小店…</div></main>
-  <footer><div><b>拾物 / SHIWU</b><p>好用的物件，让平凡的一天更值得记录。</p></div><span>本地全栈项目 · MySQL 持久化<br>商品与收货信息均用于课程演示</span><button data-view="catalog" class="text-button">回到选集 ↑</button></footer>
+  <footer><div><b>拾物 / SHIWU</b><p>好用的物件，让平凡的一天更值得记录。</p></div><span>课堂演示 · 浏览器本地保存<br>商品与收货信息均用于课程演示</span><button data-view="catalog" class="text-button">回到选集 ↑</button></footer>
   <dialog id="modal" aria-labelledby="modalTitle"><div class="modal-wrap"><div class="modal-top"><div><p id="modalKicker" class="eyebrow"></p><h2 id="modalTitle"></h2></div><button class="icon-button" data-action="close" aria-label="关闭弹窗">×</button></div><div id="modalContent"></div></div></dialog>
   <div id="toast" class="toast" role="status"></div>
 </body>

@@ -1,24 +1,25 @@
-const S = {token:'', user:null, view:'catalog', category:'', keyword:'', page:1, pageSize:12, products:[], cart:[], selected:new Set(), cartLoaded:false, addresses:[], orders:[], orderStatus:'all', orderPage:1};
+const S = {token:'', user:null, view:'catalog', category:'', keyword:'', page:1, pageSize:12, products:[], cart:[], selected:new Set(), cartLoaded:false, orders:[], orderStatus:'all', orderPage:1};
 const $ = (s,r=document)=>r.querySelector(s);
 const esc = v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money = n=>'¥ '+Number(n||0).toFixed(2);
 const date = v=>v?new Date(v).toLocaleString('zh-CN',{hour12:false}):'';
 const image = v=>/^\/(assets|uploads)\/[\w./-]+$/.test(v||'')?v.replace(/^\/assets\//, './assets/'):'./assets/notebook.svg';
-const avatar = v=>/^(\/uploads\/[\w.-]+|https?:\/\/[^\s<>"']+)$/.test(v||'')?v:'';
 function toast(message,error=false){const el=$('#toast');el.textContent=message;el.classList.toggle('error',error);el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),3300);}
 async function api(path,options={}){
- const headers={...options.headers};
- if(!(options.body instanceof FormData)) headers['Content-Type']='application/json';
- if(S.token)headers.Authorization='Bearer '+S.token;
- const response=await fetch(path,{...options,headers});
- let result={};try{result=await response.json();}catch{}
- if(!response.ok){if(response.status===401&&S.token){S.token='';S.user=null;S.cart=[];S.cartLoaded=false;S.selected.clear();localStorage.removeItem('shiwu-token');$('#cartCount').textContent='0';renderHeader();}throw new Error(result.error||'请求失败，请稍后重试');}
- return result;
+ return shopDemoApi(path, options, S.token);
 }
 function openModal(title,content,kicker='SHIWU / 拾物'){const el=$('#modal');if(el.open)el.close();$('#modalTitle').textContent=title;$('#modalKicker').textContent=kicker;$('#modalContent').innerHTML=content;el.showModal();}
 function closeModal(){if($('#modal').open)$('#modal').close();}
-function renderHeader(){document.querySelectorAll('nav [data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===S.view));const el=$('#accountButton');el.dataset.action=S.user?'profile':'login';el.textContent=S.user?S.user.username:'登录 / 注册';}
-function requireLogin(){if(S.user)return true;authDialog('login');return false;}
+function renderHeader(){document.querySelectorAll('nav [data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===S.view));const el=$('#accountButton');el.dataset.action=S.user?'profile':'login';el.textContent=S.user?S.user.display_name:'演示登录';}
+function syncShopSession(){
+ const session=window.ZhuyingDemo.getSession();
+ const token=session?.token||'';
+ if(S.token!==token){S.cartLoaded=false;S.selected.clear();}
+ S.token=token;
+ S.user=session?.user||null;
+ renderHeader();
+}
+function requireLogin(){syncShopSession();if(S.user)return true;authDialog();return false;}
 function empty(title,note,action='catalog',label='去看看好物'){return '<section class="empty"><span class="empty-symbol">拾</span><h2>'+esc(title)+'</h2><p>'+esc(note)+'</p><button class="button primary" '+(action==='catalog'?'data-action="reset-catalog"':'data-view="'+action+'"')+'>'+esc(label)+'</button></section>';}
 function pageHeader(kicker,title,note,extra=''){return '<section class="page-header"><div><p class="eyebrow">'+esc(kicker)+'</p><h1>'+esc(title)+'</h1><p>'+esc(note)+'</p></div>'+extra+'</section>';}
 function pagination(total,page,size,prefix){const pages=Math.ceil(total/size);if(pages<=1)return '';return '<div class="pagination"><span>共 '+total+' 项 · 第 '+page+' / '+pages+' 页</span><button class="button secondary" data-action="'+prefix+'-page" data-page="'+(page-1)+'" '+(page<=1?'disabled':'')+'>上一页</button><button class="button secondary" data-action="'+prefix+'-page" data-page="'+(page+1)+'" '+(page>=pages?'disabled':'')+'>下一页</button></div>';}
@@ -32,7 +33,16 @@ async function loadCatalog(){
  $('#content').innerHTML=hero+'<section class="collection" id="collection"><div class="collection-header"><div><p class="eyebrow">CURATED FOR EVERYDAY</p><h2>好物选集 <small>'+d.total+' 件日常之选</small></h2></div><form data-form="search" class="search-form"><label class="sr-only" for="catalogSearch">搜索商品</label><input id="catalogSearch" name="keyword" value="'+esc(S.keyword)+'" placeholder="寻找一件好物…" maxlength="120"><button aria-label="搜索商品">搜索</button></form></div><div class="categories">'+cats+'</div>'+(cards?'<div class="product-grid">'+cards+'</div>':empty('没有找到这件好物','换个关键词或分类再找找。','catalog','重新浏览'))+pagination(d.total,d.page,d.pageSize,'catalog')+'</section><section class="shop-note"><span class="eyebrow">LESS, BUT BETTER.</span><p>不用很多，刚刚好就好。<br>每一个被留下的物件，都有自己的位置。</p><span>本地课程演示商城<br>所有商品均为示例</span></section>';
 }
 async function productDialog(id){const p=(await api('/api/products/'+id)).item;openModal(p.name,'<div class="product-detail"><img class="detail-image" src="'+image(p.image)+'" alt="'+esc(p.name)+'"><div><span class="pill">'+esc(p.category)+'</span><h3 class="detail-price">'+money(p.price)+'</h3><p class="detail-description">'+esc(p.description)+'</p><p class="stock">现有库存 '+p.stock+' 件</p><form data-form="product-add" data-id="'+p.id+'"><div class="field"><label for="productQty">数量</label><input id="productQty" name="quantity" type="number" min="1" max="'+p.stock+'" step="1" value="1" required '+(!p.stock?'disabled':'')+'></div><button class="button primary full" '+(!p.stock?'disabled':'')+'>'+(!p.stock?'暂时售罄':'加入购物袋')+'</button></form><p class="small-note">商品用于本地流程演示，下单后不发生真实支付。</p></div></div>','THE EVERYDAY COLLECTION');}
-function authDialog() { toast("只读预览。登录和下单需启动拾物原项目。"); }
+function authDialog(){
+ const username=esc(window.ZhuyingDemo.USERNAME);
+ const password=esc(window.ZhuyingDemo.PASSWORD);
+ openModal('课堂演示登录', [
+  '<p class="dialog-copy">演示账号 <b>'+username+'</b>，密码 <b>'+password+'</b>。请使用此账号体验下单流程。</p>',
+  '<form data-form="login"><div class="field"><label for="demoUsername">演示账号</label><input id="demoUsername" name="username" value="'+username+'" autocomplete="username" required></div>',
+  '<div class="field"><label for="demoPassword">演示密码</label><input id="demoPassword" name="password" type="password" autocomplete="current-password" required></div>',
+  '<div class="form-actions"><button class="button primary">登录</button></div></form>',
+ ].join(''), 'CLASSROOM DEMO');
+}
 async function loadCart(){
  const d=await api('/api/cart');S.cart=d.items;
  if(!S.cartLoaded){S.selected=new Set(d.items.map(i=>i.id));S.cartLoaded=true;}else S.selected=new Set([...S.selected].filter(id=>d.items.some(i=>i.id===id)));
@@ -42,9 +52,31 @@ async function loadCart(){
 }
 function updateSelection(){const selected=S.cart.filter(i=>S.selected.has(i.id));if($('#selectedQuantity'))$('#selectedQuantity').textContent=selected.reduce((n,i)=>n+i.quantity,0)+' 件';if($('#selectedTotal'))$('#selectedTotal').textContent=money(selected.reduce((n,i)=>n+Number(i.subtotal),0));if($('#checkoutButton'))$('#checkoutButton').disabled=!selected.length;const all=$('#selectAll');if(all){all.checked=S.cart.length>0&&selected.length===S.cart.length;all.indeterminate=selected.length>0&&selected.length<S.cart.length;}}
 const addressText=a=>a.province+a.city+a.district+a.detail;
-function addressForm(a={}){return '<form data-form="address" data-id="'+(a.id||'')+'"><div class="form-grid"><div class="field"><label for="recipient">收货人</label><input id="recipient" name="recipient" value="'+esc(a.recipient)+'" required maxlength="50"></div><div class="field"><label for="phone">联系电话</label><input id="phone" name="phone" type="tel" value="'+esc(a.phone)+'" required minlength="6" maxlength="24"></div></div><div class="form-grid three">'+[['province','省份'],['city','城市'],['district','区 / 县']].map(([key,title])=>'<div class="field"><label for="'+key+'">'+title+'</label><input id="'+key+'" name="'+key+'" value="'+esc(a[key])+'" required maxlength="50"></div>').join('')+'</div><div class="field"><label for="detail">详细地址</label><textarea id="detail" name="detail" rows="2" required maxlength="200">'+esc(a.detail)+'</textarea></div><label class="check-label"><input name="is_default" type="checkbox" '+(a.is_default?'checked':'')+'> 设为默认地址</label><div class="form-actions"><button class="button secondary" type="button" data-action="close">取消</button><button class="button primary">保存地址</button></div></form>';}
-async function loadAddresses(){S.addresses=(await api('/api/addresses')).items;const cards=S.addresses.map(a=>'<article class="address-card panel"><div class="address-head"><h3>'+esc(a.recipient)+'</h3>'+(a.is_default?'<span class="pill">默认地址</span>':'')+'</div><p class="address-phone">'+esc(a.phone)+'</p><p>'+esc(addressText(a))+'</p><div class="address-actions">'+(!a.is_default?'<button class="text-button" data-action="address-default" data-id="'+a.id+'">设为默认</button>':'<span class="muted">优先用于结算</span>')+'<div><button class="text-button" data-action="address-edit" data-id="'+a.id+'">编辑</button><button class="text-button danger" data-action="address-delete" data-id="'+a.id+'">删除</button></div></div></article>').join('');$('#content').innerHTML=pageHeader('YOUR ADDRESS BOOK','地址簿','为你的小物，留一个准确的目的地。','<button class="button primary" data-action="address-new">+ 添加收货地址</button>')+(cards?'<div class="addresses-grid">'+cards+'</div>':empty('还没有收货地址','点击上方“添加收货地址”，填写课程演示信息。','cart','返回购物袋'))+'<p class="section-note">地址仅在本机数据库中保存。订单会保存下单时的地址快照，之后编辑或删除地址不会改变历史订单。</p>';}
-async function checkoutDialog(){if(!S.selected.size)return toast('请先选择需要结算的商品',true);S.addresses=(await api('/api/addresses')).items;const selected=S.cart.filter(i=>S.selected.has(i.id));openModal('确认这一次小小的期待','<div class="checkout-items">'+selected.map(i=>'<div><span>'+esc(i.name)+' × '+i.quantity+'</span><b>'+money(i.subtotal)+'</b></div>').join('')+'</div>'+(S.addresses.length?'<form data-form="checkout"><div class="field"><label for="checkoutAddress">收货地址</label><select id="checkoutAddress" name="address_id" required>'+S.addresses.map(a=>'<option value="'+a.id+'">'+(a.is_default?'[默认] ':'')+esc(a.recipient+' · '+addressText(a))+'</option>').join('')+'</select></div><div class="summary-total"><span>商品合计 · 运费 ¥ 0</span><strong>'+money(selected.reduce((n,i)=>n+Number(i.subtotal),0))+'</strong></div><p class="small-note">创建后订单为“待支付”，不会扣款。库存将在创建订单时扣减；取消待支付订单会恢复库存。</p><div class="form-actions"><button class="button secondary" type="button" data-view="addresses">管理地址</button><button class="button primary">创建待支付订单</button></div></form>':'<div class="empty compact"><h3>先添加一条收货地址</h3><p>新账号需要先建立地址，再创建订单。</p><button class="button primary" data-action="address-new">添加地址</button></div>'),'CHECKOUT / 核对订单');}
+async function loadAddresses(){
+ const { items } = await api('/api/addresses');
+ const cards = items.map(address => '<article class="address-card panel"><div class="address-head"><h3>'
+  + esc(address.recipient) + '</h3><span class="pill">课堂示例</span></div><p class="address-phone">'
+  + esc(address.phone) + '</p><p>' + esc(addressText(address)) + '</p></article>').join('');
+ $('#content').innerHTML = pageHeader('YOUR ADDRESS BOOK','地址簿','使用这条虚构地址体验下单，无需填写个人信息。')
+  + '<div class="addresses-grid">' + cards + '</div>';
+}
+async function checkoutDialog(){
+ if(!S.selected.size)return toast('请先选择需要结算的商品',true);
+ const { items: addresses } = await api('/api/addresses');
+ const selected = S.cart.filter(item => S.selected.has(item.id));
+ const items = selected.map(item => '<div><span>' + esc(item.name) + ' × ' + item.quantity
+  + '</span><b>' + money(item.subtotal) + '</b></div>').join('');
+ const addressOptions = addresses.map(address => '<option value="' + address.id + '">'
+  + esc(address.recipient + ' · ' + addressText(address)) + '</option>').join('');
+ const total = money(selected.reduce((sum, item) => sum + item.subtotal, 0));
+ openModal('确认这一次小小的期待', '<div class="checkout-items">' + items + '</div>'
+  + '<form data-form="checkout"><div class="field"><label for="checkoutAddress">示例收货地址</label>'
+  + '<select id="checkoutAddress" name="address_id" required>' + addressOptions + '</select></div>'
+  + '<div class="summary-total"><span>商品合计 · 运费 ¥ 0</span><strong>' + total + '</strong></div>'
+  + '<p class="small-note">待支付状态用于展示流程。这里不会扣款或配送，取消订单会恢复演示库存。</p>'
+  + '<div class="form-actions"><button class="button secondary" type="button" data-view="addresses">查看示例地址</button>'
+  + '<button class="button primary">创建待支付订单</button></div></form>', 'CHECKOUT / 核对订单');
+}
 async function loadOrders(){
  const d=await api('/api/orders?'+new URLSearchParams({status:S.orderStatus,page:S.orderPage,pageSize:8}));S.orders=d.items;
  const tabs=[['all','全部订单'],['pending','待支付'],['cancelled','已取消']].map(([v,t])=>'<button class="category '+(S.orderStatus===v?'active':'')+'" data-action="order-status" data-status="'+v+'">'+t+'</button>').join('');
@@ -53,19 +85,23 @@ async function loadOrders(){
 }
 async function orderDetail(id){const o=(await api('/api/orders/'+id)).item;openModal('订单详情','<div class="order-detail-header"><div><p>'+esc(o.order_no)+'</p><small>'+date(o.created_at)+'</small></div><span class="status '+o.status+'">'+esc(o.status_label)+'</span></div><div class="order-address"><p class="eyebrow">收货信息 · 下单快照</p><b>'+esc(o.address.recipient)+' · '+esc(o.address.phone)+'</b><p>'+esc(addressText(o.address))+'</p></div><div class="order-products">'+o.items.map(i=>'<div class="order-product"><img src="'+image(i.product_image)+'" alt="'+esc(i.product_name)+'"><div><b>'+esc(i.product_name)+'</b><small>'+money(i.unit_price)+' × '+i.quantity+'</small></div><strong>'+money(Number(i.unit_price)*i.quantity)+'</strong></div>').join('')+'</div><div class="summary-total"><span>订单合计</span><strong>'+money(o.total_price)+'</strong></div><p class="small-note">本地课程演示：不接入真实支付。'+(o.status==='pending'?'取消后将恢复商品库存。':'该订单已取消，库存已恢复。')+'</p>'+(o.status==='pending'?'<div class="form-actions"><button class="button secondary danger" data-action="order-cancel" data-id="'+o.id+'">取消订单</button></div>':''),'ORDER / '+o.id);}
 function cancelDialog(id){openModal('确定取消这笔订单？','<p class="dialog-copy">只会取消这笔待支付订单；商品库存会恢复，订单记录仍可在“已取消”中查看。</p><div class="form-actions"><button class="button secondary" data-action="close">再想想</button><button class="button primary" data-action="order-cancel-confirm" data-id="'+id+'">确认取消</button></div>');}
-async function loadProfile(){const u=(await api('/api/me')).user;S.user=u;renderHeader();$('#content').innerHTML=pageHeader('YOUR PROFILE','你好，'+u.username,'给这间小店留下一张属于你的名片。')+'<section class="profile-layout panel"><div class="profile-side"><div class="profile-avatar" id="profileAvatar">'+(avatar(u.avatar)?'<img src="'+esc(avatar(u.avatar))+'" alt="个人头像">':esc(u.username.slice(0,1)))+'</div><label class="button secondary upload-label">更换头像<input type="file" id="avatarUpload" accept="image/png,image/jpeg,image/webp,image/gif" hidden></label><p class="small-note">PNG / JPEG / WebP / GIF<br>单张图片不超过 5 MB</p></div><form data-form="profile"><input name="avatar" type="hidden" id="avatarValue" value="'+esc(u.avatar)+'"><div class="form-grid"><div class="field"><label for="profileName">用户名</label><input id="profileName" name="username" value="'+esc(u.username)+'" required minlength="3" maxlength="20"></div><div class="field"><label for="profileEmail">邮箱</label><input id="profileEmail" name="email" type="email" value="'+esc(u.email)+'" required maxlength="120"></div></div><div class="field"><label for="profileBio">简介</label><textarea id="profileBio" name="bio" maxlength="300" rows="4" placeholder="留一点关于你的日常…">'+esc(u.bio)+'</textarea></div><div class="form-actions"><button type="button" class="button secondary danger" data-action="logout">退出登录</button><button class="button primary">保存个人资料</button></div></form></section>';}
+async function loadProfile(){
+ const { user } = await api('/api/me');
+ $('#content').innerHTML = pageHeader('CLASSROOM DEMO','你好，' + user.display_name,'当前使用课堂演示账号。')
+  + '<section class="panel address-card"><p>账号：' + esc(user.username)
+  + '</p><p>购物袋和订单记录保存在当前浏览器中。</p>'
+  + '<div class="form-actions"><button type="button" class="button secondary danger" data-action="logout">退出登录</button></div></section>';
+}
 async function addToCart(id,quantity=1){if(!requireLogin())return;await api('/api/cart',{method:'POST',body:JSON.stringify({product_id:Number(id),quantity:Number(quantity)})});toast('已放进购物袋');await cartCount();if(S.view==='cart')await loadCart();}
-
 document.addEventListener('click',async e=>{
  const view=e.target.closest('[data-view]');if(view){e.preventDefault();await setView(view.dataset.view);return;}
  const el=e.target.closest('[data-action]');if(!el||el.disabled)return;const action=el.dataset.action;el.disabled=true;
  try{
   if(action==='close')closeModal();
   else if(action==='reset-catalog'){S.keyword='';S.category='';S.page=1;await setView('catalog');}
-  else if(action==='login')authDialog('login');
+  else if(action==='login')authDialog();
   else if(action==='profile')await setView('profile');
-  else if(action==='auth-mode')authDialog(el.dataset.mode);
-  else if(action==='logout'){S.token='';S.user=null;S.cartLoaded=false;S.selected.clear();localStorage.removeItem('shiwu-token');await cartCount();await setView('catalog');toast('已退出登录');}
+  else if(action==='logout'){window.ZhuyingDemo.logout();syncShopSession();await cartCount();await setView('catalog');toast('已退出登录');}
   else if(action==='browse')$('#collection').scrollIntoView({behavior:'smooth'});
   else if(action==='category'){S.category=el.dataset.value;S.page=1;await loadCatalog();$('#collection').scrollIntoView({behavior:'smooth'});}
   else if(action==='catalog-page'){S.page=Number(el.dataset.page);await loadCatalog();$('#collection').scrollIntoView({behavior:'smooth'});}
@@ -74,11 +110,6 @@ document.addEventListener('click',async e=>{
   else if(action==='cart-quantity'){await api('/api/cart/'+el.dataset.id,{method:'PUT',body:JSON.stringify({quantity:Number(el.dataset.quantity)})});await loadCart();}
   else if(action==='cart-remove'){await api('/api/cart/'+el.dataset.id,{method:'DELETE'});await loadCart();toast('已移出购物袋');}
   else if(action==='checkout')await checkoutDialog();
-  else if(action==='address-new')openModal('添加收货地址',addressForm(),'ADDRESS BOOK');
-  else if(action==='address-edit'){const a=S.addresses.find(a=>a.id===Number(el.dataset.id));if(a)openModal('编辑收货地址',addressForm(a),'ADDRESS BOOK');}
-  else if(action==='address-default'){const a=S.addresses.find(a=>a.id===Number(el.dataset.id));await api('/api/addresses/'+a.id,{method:'PUT',body:JSON.stringify({...a,is_default:true})});await loadAddresses();toast('默认地址已更新');}
-  else if(action==='address-delete')openModal('删除这条收货地址？','<p class="dialog-copy">历史订单仍会保留下单时的地址。若删除默认地址，系统会从剩余地址中设置一个默认地址。</p><div class="form-actions"><button class="button secondary" data-action="close">保留地址</button><button class="button primary" data-action="address-delete-confirm" data-id="'+el.dataset.id+'">确认删除</button></div>');
-  else if(action==='address-delete-confirm'){await api('/api/addresses/'+el.dataset.id,{method:'DELETE'});closeModal();await setView('addresses');toast('地址已删除');}
   else if(action==='order-status'){S.orderStatus=el.dataset.status;S.orderPage=1;await loadOrders();}
   else if(action==='orders-page'){S.orderPage=Number(el.dataset.page);await loadOrders();window.scrollTo({top:0,behavior:'smooth'});}
   else if(action==='order-detail')await orderDetail(el.dataset.id);
@@ -89,12 +120,10 @@ document.addEventListener('click',async e=>{
 document.addEventListener('submit',async e=>{
  const form=e.target.closest('form[data-form]');if(!form)return;e.preventDefault();const button=form.querySelector('button:not([type="button"])');if(button?.disabled)return;if(button)button.disabled=true;const data=Object.fromEntries(new FormData(form));const type=form.dataset.form;
  try{
-  if(type==='login'||type==='register'){const d=await api('/api/auth/'+type,{method:'POST',body:JSON.stringify(data)});S.token=d.token;S.user=d.user;localStorage.setItem('shiwu-token',d.token);S.cartLoaded=false;closeModal();renderHeader();await cartCount();toast('欢迎你，'+d.user.username);}
+  if(type==='login'){const {user}=await api('/api/auth/login',{method:'POST',body:JSON.stringify(data)});syncShopSession();closeModal();await cartCount();toast('欢迎你，'+user.display_name);}
   else if(type==='search'){S.keyword=data.keyword.trim();S.page=1;await loadCatalog();$('#collection').scrollIntoView({behavior:'smooth'});}
   else if(type==='product-add'){await addToCart(form.dataset.id,data.quantity);}
-  else if(type==='address'){data.is_default=form.elements.is_default.checked;await api('/api/addresses'+(form.dataset.id?'/'+form.dataset.id:''),{method:form.dataset.id?'PUT':'POST',body:JSON.stringify(data)});closeModal();await setView('addresses');toast('收货地址已保存');}
   else if(type==='checkout'){if(!S.selected.size)throw new Error('请选择商品');const d=await api('/api/orders',{method:'POST',body:JSON.stringify({address_id:Number(data.address_id),cart_ids:[...S.selected]})});S.cartLoaded=false;closeModal();S.orderStatus='all';S.orderPage=1;await setView('orders');await cartCount();await orderDetail(d.item.id);toast('待支付订单已创建，未发生扣款');}
-  else if(type==='profile'){const d=await api('/api/me',{method:'PUT',body:JSON.stringify(data)});S.user=d.user;renderHeader();toast('个人资料已保存');}
  }catch(error){toast(error.message,true);}finally{if(button)button.disabled=false;}
 });
 document.addEventListener('change',async e=>{
@@ -102,7 +131,14 @@ document.addEventListener('change',async e=>{
  if(el.matches('[data-cart-select]')){const id=Number(el.dataset.cartSelect);if(el.checked)S.selected.add(id);else S.selected.delete(id);updateSelection();}
  if(el.id==='selectAll'){S.selected=new Set(el.checked?S.cart.map(i=>i.id):[]);document.querySelectorAll('[data-cart-select]').forEach(x=>x.checked=el.checked);updateSelection();}
  if(el.matches('[data-cart-quantity]')){el.disabled=true;try{await api('/api/cart/'+el.dataset.cartQuantity,{method:'PUT',body:JSON.stringify({quantity:Number(el.value)})});await loadCart();}catch(error){toast(error.message,true);await loadCart();}finally{el.disabled=false;}}
- if(el.id==='avatarUpload'&&el.files[0]){el.disabled=true;try{const data=new FormData();data.append('file',el.files[0]);const d=await api('/api/uploads',{method:'POST',body:data});$('#avatarValue').value=d.url;$('#profileAvatar').innerHTML='<img src="'+esc(d.url)+'" alt="新头像">';toast('头像已上传，请保存个人资料');}catch(error){toast(error.message,true);}finally{el.disabled=false;}}
 });
 $('#modal').addEventListener('click',e=>{if(e.target===$('#modal'))closeModal();});
-(async()=>{if(S.token){try{S.user=(await api('/api/me')).user;}catch{S.token='';localStorage.removeItem('shiwu-token');}}renderHeader();await setView('catalog');await cartCount();})();
+window.addEventListener('storage',()=>{
+ const previous = S.token;
+ syncShopSession();
+ if(previous!==S.token){
+  if(!S.user && S.view!=='catalog') void setView('catalog');
+  void cartCount();
+ }
+});
+(async()=>{syncShopSession();await setView('catalog');await cartCount();})();
