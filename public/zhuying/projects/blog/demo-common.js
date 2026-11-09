@@ -1,6 +1,7 @@
 'use strict';
 
 const CourseClassroom = (() => {
+  let handler;
   const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   })[char]);
@@ -38,10 +39,9 @@ const CourseClassroom = (() => {
   }
 
   function install(key, defaults, handle) {
-    const fallback = window.fetch.bind(window);
-    window.fetch = async (input, options = {}) => {
+    handler = async (input, options = {}) => {
       const url = new URL(input, location.href);
-      if (url.origin !== location.origin || !url.pathname.startsWith('/api/')) return fallback(input, options);
+      if (url.origin !== location.origin || !url.pathname.startsWith('/api/')) return fail('课堂演示只处理本页的体验操作。', 404);
       const method = (options.method || 'GET').toUpperCase();
       const token = new Headers(options.headers).get('Authorization')?.replace(/^Bearer /, '');
       const session = window.ZhuyingDemo.isAuthorized(token) ? window.ZhuyingDemo.getSession() : null;
@@ -72,5 +72,10 @@ const CourseClassroom = (() => {
     };
   }
 
-  return { fail, install, markdown, paginate, response };
+  async function request(path, options) {
+    if (!handler) throw new Error('课堂演示未加载，请刷新页面后重试。');
+    return handler(path, options);
+  }
+
+  return { fail, install, markdown, paginate, request, response };
 })();

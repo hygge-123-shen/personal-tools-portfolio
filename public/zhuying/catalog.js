@@ -40,7 +40,7 @@ const projects = [
   {
     title: '知识岛', label: '全栈练习 · 学习社区', category: 'apps', tone: 'lilac', mark: '岛', coverLabel: 'STUDY COMMUNITY',
     image: 'assets/covers/knowledge.png', imagePosition: 'center 5%',
-    href: 'projects/studyhub/index.html?v=2', action: '课堂演示',
+    href: 'projects/studyhub/index.html?v=3', action: '课堂演示',
     summary: '把学习文章、社区问答和资源商城放进同一个站点。',
     detail: '一项综合练习，把博客、问答和商城的典型功能组织成一个学习社区。',
     points: ['学习文章的发布与检索', '问答、回答、点赞与采纳', '从资源商品到购物车和订单的流程'],
@@ -48,7 +48,7 @@ const projects = [
   },
   {
     title: '纸间', label: '全栈练习 · 个人博客', category: 'apps', tone: 'sand', mark: '纸', coverLabel: 'PERSONAL BLOG',
-    href: 'projects/blog/index.html?v=2', action: '课堂演示',
+    href: 'projects/blog/index.html?v=3', action: '课堂演示',
     summary: '一套支持 Markdown 编辑、分类和搜索的个人博客。',
     detail: '从写作和阅读两种场景出发，练习文章管理、用户权限、内容检索和分页。',
     points: ['支持 Markdown 文章编辑与预览', '按分类、标签和关键词浏览文章'],
@@ -56,7 +56,7 @@ const projects = [
   },
   {
     title: '问知', label: '全栈练习 · 问答社区', category: 'apps', tone: 'slate', mark: '问', coverLabel: 'Q&A COMMUNITY',
-    href: 'projects/questions/index.html?v=2', action: '课堂演示',
+    href: 'projects/questions/index.html?v=3', action: '课堂演示',
     summary: '围绕提问、回答、点赞和采纳搭建的问答社区。',
     detail: '通过常见问答场景练习内容互动、状态管理和社区积分。',
     points: ['按最新、热门和待解决浏览问题', '原版实现回答点赞与提问者采纳'],
@@ -64,7 +64,7 @@ const projects = [
   },
   {
     title: '拾物', label: '全栈练习 · 迷你商城', category: 'apps', tone: 'clay', mark: '拾', coverLabel: 'MINI SHOP',
-    href: 'projects/shop/index.html?v=2', action: '课堂演示',
+    href: 'projects/shop/index.html?v=3', action: '课堂演示',
     summary: '用小型商城练习商品浏览、购物车、库存和订单管理。',
     detail: '从浏览商品到生成订单，练习电商页面和后台的数据处理。',
     points: ['商品列表、详情和购物车', '原版支持收货地址、订单筛选和取消'],

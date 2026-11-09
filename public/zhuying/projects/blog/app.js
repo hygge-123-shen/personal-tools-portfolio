@@ -28,8 +28,8 @@ async function api(path, options = {}) {
     body = JSON.stringify(body); headers.set("Content-Type", "application/json");
   }
   let response;
-  try { response = await fetch(path, {...options, headers, body}); }
-  catch { throw new Error("暂时无法连接博客服务，请确认项目已启动后重试。"); }
+  try { response = await CourseClassroom.request(path, {...options, headers, body}); }
+  catch { throw new Error("课堂演示未加载，请刷新页面后重试。"); }
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
     if (response.status === 401) { state.token = ""; state.user = null; renderAccount(); }

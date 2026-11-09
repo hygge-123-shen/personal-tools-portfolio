@@ -8,7 +8,9 @@ async function api(path, options = {}) {
   const headers = new Headers(options.headers || {});
   if (!(options.body instanceof FormData)) headers.set('Content-Type', 'application/json');
   if (state.token) headers.set('Authorization', 'Bearer ' + state.token);
-  const response = await fetch(path, {...options, headers});
+  let response;
+  try { response = await CourseClassroom.request(path, {...options, headers}); }
+  catch { throw new Error('课堂演示未加载，请刷新页面后重试。'); }
   let payload = {};
   try { payload = await response.json(); } catch { throw new Error('服务返回了无法读取的结果，请稍后重试'); }
   if (!response.ok) {
