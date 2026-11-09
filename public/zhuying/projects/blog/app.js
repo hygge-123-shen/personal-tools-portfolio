@@ -58,7 +58,7 @@ function requireAuth(hash) {
 }
 function openAuth() {
   $("#authTitle").textContent = "登录课堂演示账号";
-  $("#authContent").innerHTML = '<form data-form="auth"><div class="field"><label for="authUsername">演示账号</label><input id="authUsername" name="username" autocomplete="username" value="' + esc(window.ZhuyingDemo.USERNAME) + '" required></div><div class="field"><label for="authPassword">演示密码</label><input id="authPassword" name="password" type="password" autocomplete="current-password" required><small>课堂演示密码 ' + esc(window.ZhuyingDemo.PASSWORD) + '。</small></div><div class="form-error" data-form-error role="alert"></div><button class="button primary" type="submit">登录</button></form>';
+  $("#authContent").innerHTML = '<form data-form="auth"><div class="field"><label for="authUsername">演示账号</label><input id="authUsername" name="username" autocomplete="username" value="' + esc(window.ZhuyingDemo.USERNAME) + '" required></div><div class="field"><label for="authPassword">演示密码</label><input id="authPassword" name="password" type="password" autocomplete="current-password" required></div><div class="form-error" data-form-error role="alert"></div><button class="button primary" type="submit">登录</button></form>';
   if (!$("#authDialog").open) $("#authDialog").showModal();
 }
 function tagLinks(tags, filters = {}) {

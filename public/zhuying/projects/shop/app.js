@@ -35,9 +35,9 @@ async function loadCatalog(){
 async function productDialog(id){const p=(await api('/api/products/'+id)).item;openModal(p.name,'<div class="product-detail"><img class="detail-image" src="'+image(p.image)+'" alt="'+esc(p.name)+'"><div><span class="pill">'+esc(p.category)+'</span><h3 class="detail-price">'+money(p.price)+'</h3><p class="detail-description">'+esc(p.description)+'</p><p class="stock">现有库存 '+p.stock+' 件</p><form data-form="product-add" data-id="'+p.id+'"><div class="field"><label for="productQty">数量</label><input id="productQty" name="quantity" type="number" min="1" max="'+p.stock+'" step="1" value="1" required '+(!p.stock?'disabled':'')+'></div><button class="button primary full" '+(!p.stock?'disabled':'')+'>'+(!p.stock?'暂时售罄':'加入购物袋')+'</button></form><p class="small-note">商品用于本地流程演示，下单后不发生真实支付。</p></div></div>','THE EVERYDAY COLLECTION');}
 function authDialog(){
  const username=esc(window.ZhuyingDemo.USERNAME);
- const password=esc(window.ZhuyingDemo.PASSWORD);
+
  openModal('课堂演示登录', [
-  '<p class="dialog-copy">演示账号 <b>'+username+'</b>，密码 <b>'+password+'</b>。请使用此账号体验下单流程。</p>',
+  '<p class="dialog-copy">请使用课堂演示账号和密码登录。</p>',
   '<form data-form="login"><div class="field"><label for="demoUsername">演示账号</label><input id="demoUsername" name="username" value="'+username+'" autocomplete="username" required></div>',
   '<div class="field"><label for="demoPassword">演示密码</label><input id="demoPassword" name="password" type="password" autocomplete="current-password" required></div>',
   '<div class="form-actions"><button class="button primary">登录</button></div></form>',
