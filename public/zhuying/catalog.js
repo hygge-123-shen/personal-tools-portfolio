@@ -48,7 +48,7 @@ const projects = [
   },
   {
     title: '纸间', label: '全栈练习 · 个人博客', category: 'apps', tone: 'sand', mark: '纸', coverLabel: 'PERSONAL BLOG',
-    href: 'projects/blog/index.html?v=3', action: '课堂演示',
+    href: 'projects/blog/index.html?v=4', action: '课堂演示',
     summary: '一套支持 Markdown 编辑、分类和搜索的个人博客。',
     detail: '从写作和阅读两种场景出发，练习文章管理、用户权限、内容检索和分页。',
     points: ['支持 Markdown 文章编辑与预览', '按分类、标签和关键词浏览文章'],
@@ -56,7 +56,7 @@ const projects = [
   },
   {
     title: '问知', label: '全栈练习 · 问答社区', category: 'apps', tone: 'slate', mark: '问', coverLabel: 'Q&A COMMUNITY',
-    href: 'projects/questions/index.html?v=3', action: '课堂演示',
+    href: 'projects/questions/index.html?v=4', action: '课堂演示',
     summary: '围绕提问、回答、点赞和采纳搭建的问答社区。',
     detail: '通过常见问答场景练习内容互动、状态管理和社区积分。',
     points: ['按最新、热门和待解决浏览问题', '原版实现回答点赞与提问者采纳'],

@@ -40,8 +40,9 @@ const CourseClassroom = (() => {
 
   function install(key, defaults, handle) {
     handler = async (input, options = {}) => {
-      const url = new URL(input, location.href);
-      if (url.origin !== location.origin || !url.pathname.startsWith('/api/')) return fail('课堂演示只处理本页的体验操作。', 404);
+      const demoOrigin = 'https://classroom.invalid';
+      const url = new URL(input, demoOrigin);
+      if (url.origin !== demoOrigin || !url.pathname.startsWith('/api/')) return fail('课堂演示只处理本页的体验操作。', 404);
       const method = (options.method || 'GET').toUpperCase();
       const token = new Headers(options.headers).get('Authorization')?.replace(/^Bearer /, '');
       const session = window.ZhuyingDemo.isAuthorized(token) ? window.ZhuyingDemo.getSession() : null;
