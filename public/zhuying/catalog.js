@@ -24,7 +24,7 @@ const projects = [
   },
   {
     title: '个人数字名片', label: '个人与校园 · 个人介绍', category: 'showcase', tone: 'sand', mark: '名', coverLabel: 'DIGITAL NAME CARD',
-    href: 'projects/card/index.html?v=2',
+    href: 'projects/card/index.html?v=3',
     summary: '一张能在手机上打开、可以下载电子名片的个人介绍页。',
     detail: '面向手机和桌面浏览器设计的静态网页，介绍我的专业、学习方向和作品。',
     points: ['以一页呈现个人简介和关注方向', '可下载 vCard 电子名片'],
